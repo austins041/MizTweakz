@@ -1,0 +1,136 @@
+/* =========================================================================
+   MIZTWEAKZ — page-about.css  (Paragon AboutView: hero → team cards)
+   Loaded after site.css on /about/ only.
+   ========================================================================= */
+
+/* .about-page keeps the shared .page gap so the section rhythm matches every other page */
+
+/* ---- hero (Paragon .about-hero / .hero-content.loaded) ---- */
+.about-hero {
+  position: relative;
+  min-height: 80vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: clamp(2rem, 5vw, 4rem) 0;
+  text-align: center;
+}
+.about-hero .hero-glow { top: 0; height: 560px; }
+.about-hero-content { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; width: 100%; max-width: 820px; }
+.hero-badge { font-size: .75rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--text-50); }
+.about-hero .hero-title { display: flex; flex-direction: column; gap: .35rem; font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 700; line-height: 1.05; }
+.hero-title .title-top { font-size: .55em; font-weight: 500; letter-spacing: .02em; color: rgba(255, 255, 255, .78); }
+.hero-title .title-bottom { color: #fff; }
+.logo-reveal { width: min(340px, 70vw); margin-block: calc(min(340px, 70vw) * -0.1); filter: drop-shadow(0 0 40px rgba(var(--ambient-rgb), calc(.35 * var(--glow, 1)))); }
+.logo-reveal picture { display: contents; }
+.logo-reveal img { width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; }
+.highlights-row {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  width: 100%; padding-top: 1.5rem; margin-top: .5rem;
+  border-top: 1px solid var(--hairline);
+}
+.highlight-item { display: flex; flex-direction: column; align-items: center; gap: .3rem; min-width: 100px; }
+.highlight-value { font-family: var(--font-display); font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 700; color: var(--accent); line-height: 1; }
+.highlight-label { font-size: .85rem; color: var(--text-50); }
+
+/* ---- values grid: numbered step badge on the shared .step-card ---- */
+.values .step-card { position: relative; }
+
+/* ---- benchmarks: consent-gated YouTube embeds (Paragon .yt-gate) ---- */
+.benchmarks { display: flex; flex-direction: column; gap: 2.5rem; width: 100%; max-width: 1200px; margin: 0 auto; }
+.video-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+.video-card { display: flex; flex-direction: column; gap: .9rem; padding: 1rem 1rem 1.25rem; }
+.video-card h3 { font-size: 1.15rem; font-weight: 600; padding: 0 .25rem; }
+.video-card .spec-label { font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); padding: 0 .25rem; }
+.yt-gate {
+  position: relative; display: flex; overflow: hidden;
+  aspect-ratio: 16 / 9; border-radius: 16px;
+  border: 1px solid var(--hairline);
+  background:
+    radial-gradient(ellipse at 50% 120%, rgba(var(--ambient-rgb), calc(.18 * var(--glow, 1))), transparent 60%),
+    linear-gradient(180deg, #2a2a2f, #15151a);
+}
+.yt-gate iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.yt-gate-placeholder { margin: auto; display: flex; flex-direction: column; align-items: center; gap: .85rem; max-width: 380px; padding: 1.5rem; text-align: center; }
+.yt-gate-play { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; color: var(--accent); background: rgba(var(--ambient-rgb), calc(.12 * var(--glow, 1))); border: 1px solid rgba(var(--ambient-rgb), calc(.35 * var(--glow, 1))); }
+.yt-gate-play svg { width: 26px; height: 26px; }
+.yt-gate-text { font-size: .9rem; color: var(--text-70); line-height: 1.6; }
+.yt-gate-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; }
+.yt-gate-manage { padding: 10px 6px; font-size: .85rem; color: var(--text-50); text-decoration: underline; }
+.yt-gate-manage:hover { color: #fff; }
+
+/* ---- team (Paragon TeamMemberCard) ---- */
+.team-section, .creators-section { width: 100%; max-width: 1300px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 2.5rem; text-align: center; }
+.team-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; width: 100%; }
+.team-card {
+  --delay: 0s;
+  width: min(100%, 320px);
+  padding: 1.75rem 1.5rem;
+  display: flex; flex-direction: column; align-items: center; gap: .75rem;
+  transition: transform .3s ease, border-color .3s ease, background .3s ease;
+}
+html.js .reveal .team-card { opacity: 0; }
+html.js .reveal.visible .team-card { animation: mz-fade-up .6s ease forwards; animation-delay: var(--delay); }
+.team-card:hover { transform: translateY(-4px); border-color: rgba(var(--ambient-rgb), calc(.3 * var(--glow, 1))); }
+.team-card.card-expanded { background: rgba(var(--ambient-rgb), calc(.05 * var(--glow, 1))); }
+.team-avatar {
+  width: 120px; height: 120px; padding: 4px; border-radius: 50%;
+  display: grid; place-items: center;
+  box-shadow: inset 0 0 0 2px rgba(var(--ambient-rgb), calc(.3 * var(--glow, 1)));
+  transition: box-shadow .3s ease, transform .3s ease;
+}
+.team-avatar img { width: 100%; height: 100%; border-radius: 50%; }
+.team-avatar img.team-avatar__logo { object-fit: contain; padding: 10px; background: linear-gradient(135deg, #34343b, #1c1c20); }
+.team-card:hover .team-avatar { transform: scale(1.05); box-shadow: inset 0 0 0 2px var(--accent); }
+.team-name { font-size: 1.25rem; font-weight: 700; }
+.team-role { font-family: var(--font-body); font-size: .9rem; font-weight: 500; color: var(--accent); }
+.team-socials { display: flex; gap: .5rem; }
+.expand-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: .6rem 1rem; border-radius: 100px;
+  border: 1px solid var(--hairline);
+  color: rgba(255, 255, 255, .6); font-size: .8rem;
+  transition: border-color .2s ease, color .2s ease;
+}
+.expand-btn:hover { border-color: rgba(255, 255, 255, .3); color: #fff; }
+.expand-btn .icon { width: 12px; height: 12px; transition: transform .3s ease; }
+.expand-btn[aria-expanded="true"] .icon { transform: rotate(180deg); }
+.team-more { display: grid; grid-template-rows: 0fr; width: 100%; transition: grid-template-rows .4s ease; }
+.team-more > div { overflow: hidden; }
+.card-expanded .team-more { grid-template-rows: 1fr; }
+.member-description { padding-top: .5rem; font-size: .9rem; line-height: 1.7; color: rgba(255, 255, 255, .72); }
+.member-description a { color: var(--accent); text-decoration: underline; }
+
+/* ---- "Trusted By The BEST" creators ---- */
+.creators-row { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(1.5rem, 4vw, 3.5rem); }
+.creator { display: flex; flex-direction: column; align-items: center; gap: .6rem; }
+.creator img { width: 110px; height: 110px; border-radius: 50%; filter: drop-shadow(0 10px 24px rgba(0, 0, 0, .45)); transition: transform .3s ease; }
+.creator:hover img { transform: scale(1.05); }
+.creator-name { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; color: #fff; }
+.creator-role { font-size: .8rem; color: var(--text-50); }
+
+/* ---- stats strip ---- */
+.about-stats {
+  width: 100%; max-width: 1100px; margin: 0 auto;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;
+  text-align: center;
+}
+.about-stats .metric { align-items: center; min-width: 0; }
+
+/* ---- responsive (Paragon: hero ≤768 min-height auto; team cards 100% in a 400px column) ---- */
+@media (max-width: 900px) {
+  .video-grid { grid-template-columns: 1fr; max-width: 620px; margin: 0 auto; width: 100%; }
+  .about-stats { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .about-hero { min-height: auto; padding: 3rem 0 1rem; }
+  .highlights-row { gap: 1.5rem; }
+  .team-grid { max-width: 400px; }
+  .team-card { width: 100%; --delay: 0s !important; }
+  .expand-btn, .yt-gate-manage { min-height: 44px; } /* 44px touch targets */
+  .video-card .spec-label { font-size: .75rem; }     /* nothing below 12px */
+}
+@media (max-width: 480px) {
+  .about-stats { padding: 1.25rem; gap: 1.25rem; }
+  .yt-gate-actions .nice-button, .yt-gate-actions .btn-clear { width: 100%; justify-content: center; }
+}

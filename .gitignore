@@ -1,0 +1,13 @@
+# Build-tool dependencies (sharp, ffmpeg-static: ~110 MB, reinstall with `npm install` in tools/img)
+node_modules/
+tools/img/node_modules/
+tools/img/package-lock.json
+
+# OS / editor noise
+Thumbs.db
+desktop.ini
+.DS_Store
+*.log
+
+# Internal study of the desktop app backend, kept local (owner decision 2026-09-10)
+docs/app-study.md

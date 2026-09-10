@@ -1,0 +1,11 @@
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# Assets keep stable URLs, so browsers must revalidate (ETag/304) instead of
+# serving a day-old copy after a redeploy. Versioned ?v= query strings on the
+# CSS/JS links are the belt-and-braces for the same problem.
+/assets/*
+  Cache-Control: public, max-age=0, must-revalidate

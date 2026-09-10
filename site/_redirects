@@ -1,0 +1,6 @@
+# Old store routes (the pack sections were removed on 2026-09-05) go home.
+/packs/*      /  301
+/packs        /  301
+# The plans page moved from /products/ to /utilities/ on 2026-09-08.
+/products/*   /utilities/  301
+/products     /utilities/  301

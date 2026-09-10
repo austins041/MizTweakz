@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800" aria-hidden="true">
+  <!-- Organic hero light: several off-centre patches with turbulence-displaced edges, not a uniform halo (owner request 2026-09-09). -->
+  <defs>
+    <filter id="rough" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".011 .016" numOctaves="3" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="140" xChannelSelector="R" yChannelSelector="G"/>
+      <feGaussianBlur stdDeviation="34"/>
+    </filter>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".02 .009" numOctaves="2" seed="21" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="90" xChannelSelector="G" yChannelSelector="B"/>
+      <feGaussianBlur stdDeviation="46"/>
+    </filter>
+  </defs>
+  <!-- main patch, pulled up and to the left of centre -->
+  <ellipse cx="330" cy="330" rx="230" ry="170" fill="#ececf2" fill-opacity=".30" filter="url(#rough)"/>
+  <!-- secondary smear, lower right, dimmer and stretched -->
+  <ellipse cx="520" cy="470" rx="260" ry="120" fill="#ffffff" fill-opacity=".13" filter="url(#soft)" transform="rotate(-18 520 470)"/>
+  <!-- small hot spot, top right -->
+  <ellipse cx="560" cy="250" rx="90" ry="70" fill="#ffffff" fill-opacity=".16" filter="url(#rough)"/>
+  <!-- faint tail, bottom left -->
+  <ellipse cx="250" cy="560" rx="170" ry="80" fill="#e6e6ec" fill-opacity=".09" filter="url(#soft)" transform="rotate(22 250 560)"/>
+</svg>
