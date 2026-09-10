@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Reset your password | MizTweakz</title>
+<style>
+  :root{
+    --bg:#1f1f21; --panel:#2b2b2e; --line:rgba(255,255,255,.10); --lineHi:rgba(255,255,255,.18);
+    --tx:#ffffff; --mu:#c7c7c8; --fa:#8f8f90; --ac:#d92b21;
+    --good:#22c55e; --bad:#ef4444;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);
+    color:var(--tx);font-family:"Roboto",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:24px}
+  .card{width:100%;max-width:400px;background:var(--panel);border:1px solid var(--line);
+    border-radius:14px;padding:28px}
+  .brand{font-size:13px;font-family:"Outfit",system-ui,sans-serif;letter-spacing:3px;font-weight:700;color:var(--ac);margin-bottom:20px}
+  h1{font-size:20px;font-family:"Outfit",system-ui,sans-serif;font-weight:700;margin:0 0 8px}
+  p{color:var(--mu);font-size:14px;line-height:1.6;margin:0 0 18px}
+  label{display:block;font-size:12px;color:var(--mu);margin:0 0 6px}
+  input{width:100%;height:42px;background:var(--bg);border:1px solid var(--line);
+    border-radius:8px;color:var(--tx);padding:0 13px;font-size:14px;outline:none;margin-bottom:14px}
+  input:focus{border-color:var(--ac)}
+  button{width:100%;height:42px;border:0;border-radius:8px;background:var(--ac);color:#fff;
+    font-weight:700;font-size:14px;cursor:pointer}
+  button:disabled{opacity:.55;cursor:default}
+  .msg{font-size:13px;line-height:1.55;border-radius:8px;padding:11px 13px;margin-bottom:14px}
+  .err{background:rgba(239,68,68,.09);border:1px solid rgba(239,68,68,.35);color:#fca5a5}
+  .ok{background:rgba(34,197,94,.09);border:1px solid rgba(34,197,94,.35);color:#4ade80}
+  .hint{color:var(--fa);font-size:12px;margin-top:14px}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap">
+<link rel="icon" href="/assets/img/brand/favicon-32.png" sizes="32x32" type="image/png">
+</head>
+<body>
+<div class="card">
+  <div class="brand">MIZTWEAKZ</div>
+  <div id="view"></div>
+</div>
+
+<script>
+// The reset endpoint. Kept here rather than in the app so the link in an email
+// works in any browser, on any device, without MizTweakz being installed.
+const AUTH_BASE = "https://miztweakz-auth.miztweakz.workers.dev";
+
+const view = document.getElementById("view");
+const token = new URLSearchParams(location.search).get("token");
+
+// A link with no token is either mistyped or someone visiting the page directly.
+if (!token) {
+  view.innerHTML = `
+    <h1>Nothing to reset</h1>
+    <p>This page needs the link from your reset email. Open that email and click the
+       button, or request a new one from the app.</p>`;
+} else {
+  view.innerHTML = `
+    <h1>Choose a new password</h1>
+    <p>At least 8 characters. You will be signed out everywhere else.</p>
+    <div id="msg"></div>
+    <label for="pw">New password</label>
+    <input id="pw" type="password" autocomplete="new-password" placeholder="New password">
+    <label for="pw2">Confirm password</label>
+    <input id="pw2" type="password" autocomplete="new-password" placeholder="Repeat it">
+    <button id="go">Set new password</button>
+    <div class="hint">This link works once and expires an hour after it was sent.</div>`;
+
+  const pw = document.getElementById("pw");
+  const pw2 = document.getElementById("pw2");
+  const go = document.getElementById("go");
+  const msg = document.getElementById("msg");
+
+  const show = (text, kind) => { msg.innerHTML = `<div class="msg ${kind}">${text}</div>`; };
+
+  // The worker returns short codes; turn them into something a person can act on.
+  const MESSAGES = {
+    password_too_short: "That password is too short. Use at least 8 characters.",
+    invalid_or_expired: "This link has expired or was already used. Request a new one from the app.",
+    server_error: "Something went wrong at our end. Try again in a moment.",
+  };
+
+  async function submit() {
+    if (pw.value.length < 8) { show(MESSAGES.password_too_short, "err"); return; }
+    if (pw.value !== pw2.value) { show("Those two passwords do not match.", "err"); return; }
+
+    go.disabled = true; go.textContent = "Saving";
+    try {
+      const r = await fetch(`${AUTH_BASE}/password/reset`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, password: pw.value }),
+      }).then((x) => x.json());
+
+      if (r && r.ok) {
+        view.innerHTML = `
+          <h1>Password changed</h1>
+          <p>You can close this page and sign in to MizTweakz with your new password.</p>`;
+      } else {
+        show(MESSAGES[r && r.error] || "Could not reset your password.", "err");
+        go.disabled = false; go.textContent = "Set new password";
+      }
+    } catch {
+      show("Could not reach the server. Check your connection and try again.", "err");
+      go.disabled = false; go.textContent = "Set new password";
+    }
+  }
+
+  go.addEventListener("click", submit);
+  pw2.addEventListener("keydown", (e) => { if (e.key === "Enter") submit(); });
+}
+</script>
+</body>
+</html>
