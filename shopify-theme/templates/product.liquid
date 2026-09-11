@@ -117,6 +117,23 @@
             <input type="hidden" name="id" id="commerce-variant-select" value="{{ current_variant.id }}">
           {%- endif -%}
 
+          {%- if product.selling_plan_groups.size > 0 -%}
+            {%- assign requires_plan = current_variant.requires_selling_plan -%}
+            <div class="commerce-field">
+              <label class="form-label" for="commerce-selling-plan">Billing</label>
+              <select class="form-select" name="selling_plan" id="commerce-selling-plan">
+                {%- unless requires_plan -%}
+                  <option value="">One time purchase</option>
+                {%- endunless -%}
+                {%- for group in product.selling_plan_groups -%}
+                  {%- for plan in group.selling_plans -%}
+                    <option value="{{ plan.id }}"{% if forloop.first and requires_plan %} selected{% endif %}>{{ plan.name | escape }}</option>
+                  {%- endfor -%}
+                {%- endfor -%}
+              </select>
+            </div>
+          {%- endif -%}
+
           <div class="commerce-field">
             <label class="form-label" for="commerce-quantity">Quantity</label>
             <input class="form-input" type="number" id="commerce-quantity" name="quantity" value="1" min="1" step="1" inputmode="numeric" style="max-width: 140px;">
