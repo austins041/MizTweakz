@@ -80,12 +80,15 @@
   <div class="media-col">
     <div class="video-wrapper">
       {%- if settings.results_video_url != blank -%}
-        <video class="results-video" width="1280" height="720" autoplay muted loop playsinline preload="metadata" poster="{{ finished-product-poster.webp | asset_url }}" aria-label="Before-and-after gameplay comparison: 113 FPS with 5 ms input delay before, 367 FPS with 0 ms input delay after">
+        <video class="results-video" width="1280" height="720" autoplay muted loop playsinline preload="metadata" poster="{{ 'finished-product-poster.webp' | asset_url }}" aria-label="Before and after gameplay comparison: 113 FPS with 5 ms input delay before, 367 FPS with 0 ms after">
           <source src="{{ settings.results_video_url }}" type="video/mp4">
-          <img src="{{ finished-product-poster.webp | asset_url }}" width="1280" height="720" alt="Before-and-after gameplay comparison: 113 FPS with 5 ms input delay before, 367 FPS with 0 ms input delay after" loading="lazy">
+          <img src="{{ 'finished-product.webp' | asset_url }}" width="1280" height="720" alt="Before and after gameplay comparison: 113 FPS with 5 ms input delay before, 367 FPS with 0 ms after" loading="lazy">
         </video>
       {%- else -%}
-        <img class="results-video" src="{{ finished-product-poster.webp | asset_url }}" width="1280" height="720" alt="Before-and-after gameplay comparison: 113 FPS with 5 ms input delay before, 367 FPS with 0 ms input delay after" loading="lazy">
+        <picture>
+          <source media="(prefers-reduced-motion: reduce)" srcset="{{ 'finished-product-poster.webp' | asset_url }}">
+          <img class="results-video" src="{{ 'finished-product.webp' | asset_url }}" width="1280" height="720" alt="Before and after gameplay comparison: 113 FPS with 5 ms input delay before, 367 FPS with 0 ms after" loading="lazy" decoding="async">
+        </picture>
       {%- endif -%}
     </div>
   </div>

@@ -69,8 +69,8 @@
       {
         "type": "url",
         "id": "results_video_url",
-        "label": "Before and after video",
-        "info": "Upload the MP4 under Settings then Files in Shopify, copy its URL and paste it here. Shopify does not allow video files inside a theme, so this cannot be bundled. Leave empty to show the still image instead."
+        "label": "Before and after video (optional)",
+        "info": "The clip already plays on the home page as an animated image, so this is optional. For full video quality, upload the MP4 under Settings then Files, copy its URL and paste it here."
       }
     ]
   }
