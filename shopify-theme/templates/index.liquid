@@ -180,6 +180,10 @@
   (function () {
     var v = document.querySelector(".results-video");
     if (!v) return;
+    /* With no MP4 configured the clip ships as an animated image, and an <img> has no
+       play/pause/paused: calling them threw a TypeError on every scroll. The animated
+       WebP loops on its own, so there is nothing to drive here. */
+    if (v.tagName !== "VIDEO") return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { v.removeAttribute("autoplay"); v.controls = true; v.pause(); return; }
     /* mobile browsers may defer a muted autoplay that starts off-screen: (re)start the clip when it scrolls into view, pause it when it leaves */
     if (!("IntersectionObserver" in window)) return;

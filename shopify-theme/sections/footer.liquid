@@ -57,7 +57,7 @@
     </div>
 
     <div class="footer-nav-col">
-      <h4 class="nav-title">{{ 'layout.footer.navigate' | t }}</h4>
+      <h2 class="nav-title">{{ 'layout.footer.navigate' | t }}</h2>
       <nav class="footer-nav" aria-label="{{ 'layout.footer.navigate' | t }}">
           {%- assign theme_nav = 'Home~/,Utilities~/pages/utilities,About~/pages/about,Affiliates~/pages/affiliates,Contact~/pages/contact' | split: ',' -%}
           {%- if section.settings.use_theme_nav -%}
@@ -74,7 +74,7 @@
     </div>
 
     <div class="footer-nav-col">
-      <h4 class="nav-title">{{ 'layout.footer.legal' | t }}</h4>
+      <h2 class="nav-title">{{ 'layout.footer.legal' | t }}</h2>
       <nav class="footer-nav" aria-label="{{ 'layout.footer.legal' | t }}">
         <a class="nav-link" href="/policies/privacy-policy">{{ 'layout.footer.privacy_policy' | t }}</a>
         <a class="nav-link" href="/policies/terms-of-service">{{ 'layout.footer.terms_of_service' | t }}</a>
@@ -84,7 +84,7 @@
     </div>
 
     <div class="footer-cta glass-card">
-      <h4 class="nav-title">{{ section.settings.cta_title }}</h4>
+      <h2 class="nav-title">{{ section.settings.cta_title }}</h2>
       <p class="cta-text">{{ section.settings.cta_text }}</p>
       <div class="nice-button-box"><a class="nice-button btn-md" href="{{ download_url }}">Download for <span class="free-word">Free</span></a></div>
     </div>
