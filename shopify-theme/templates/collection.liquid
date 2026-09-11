@@ -1,0 +1,81 @@
+{% comment %}
+  Collection template. Banner, optional description, a responsive grid of
+  product cards and pagination. No faceted filtering by design.
+  Header and footer come from the layout.
+{% endcomment %}
+
+{% style %}
+  .commerce-card-title a { display: inline-block; }
+  .commerce-card-title a:hover { color: var(--accent-bright); }
+  .commerce-card-media { display: block; }
+  .commerce-from { margin-left: 0; }
+  .commerce-placeholder { width: 70%; height: auto; opacity: .35; }
+  .commerce-empty { display: flex; flex-direction: column; align-items: center; gap: 1.25rem; text-align: center; padding: clamp(2rem, 6vw, 4rem) 1.5rem; }
+  .commerce-pagination { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin-top: 3rem; }
+  .commerce-pagination a, .commerce-pagination span { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; padding: 0 12px; border-radius: var(--radius-sm); border: 1px solid var(--hairline); color: var(--text-70); }
+  .commerce-pagination a:hover { border-color: var(--accent); color: #fff; }
+  .commerce-pagination .is-current { border-color: var(--accent); color: #fff; }
+  .commerce-pagination .is-gap { border: 0; min-width: 0; }
+{% endstyle %}
+
+<section class="banner" data-mount aria-labelledby="commerce-collection-title">
+  <div class="banner-content">
+    <h1 class="banner-title" id="commerce-collection-title">{{ collection.title | escape }}</h1>
+    {%- if collection.description != blank -%}
+      <p class="banner-subtitle">{{ collection.description | strip_html | truncatewords: 40 }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% paginate collection.products by 24 %}
+  <section class="section animate" aria-label="Products">
+    <div class="container">
+      {%- if collection.products.size > 0 -%}
+        <p class="section-description" style="margin-bottom: 1.5rem;">
+          {%- if paginate.pages > 1 -%}
+            Showing {{ paginate.current_offset | plus: 1 }} to {{ paginate.current_offset | plus: collection.products.size }} of {{ paginate.items }} products
+          {%- else -%}
+            {{ collection.products.size }} {% if collection.products.size == 1 %}product{% else %}products{% endif %}
+          {%- endif -%}
+        </p>
+
+        <div class="pack-grid">
+          {%- for product in collection.products -%}
+            {% render 'commerce-product-card', product: product, heading_tag: 'h2' %}
+          {%- endfor -%}
+        </div>
+
+        {%- if paginate.pages > 1 -%}
+          <nav class="commerce-pagination" role="navigation" aria-label="Pagination">
+            {%- if paginate.previous -%}
+              <a href="{{ paginate.previous.url }}" rel="prev">Previous</a>
+            {%- endif -%}
+
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}
+                <a href="{{ part.url }}" aria-label="Page {{ part.title }}">{{ part.title }}</a>
+              {%- elsif part.title == paginate.current_page -%}
+                <span class="is-current" aria-current="page">{{ part.title }}</span>
+              {%- else -%}
+                <span class="is-gap">{{ part.title }}</span>
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- if paginate.next -%}
+              <a href="{{ paginate.next.url }}" rel="next">Next</a>
+            {%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- else -%}
+        <div class="glass-card glass-card--pad commerce-empty">
+          <i data-icon="tags" aria-hidden="true"></i>
+          <h2 class="section-subtitle">Nothing in this collection yet</h2>
+          <p class="section-description">There are no products here right now. Browse everything in the store instead.</p>
+          <div class="nice-button-box">
+            <a class="nice-button btn-md" href="{{ routes.all_products_collection_url }}">Shop all products</a>
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+{% endpaginate %}

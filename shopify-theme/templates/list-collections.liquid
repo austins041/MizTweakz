@@ -1,0 +1,61 @@
+{% comment %}
+  All collections. A simple grid, one card per collection, each linking to its
+  own page. Header and footer come from the layout.
+{% endcomment %}
+
+{% style %}
+  .commerce-collection-card { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+  .commerce-collection-media { aspect-ratio: 16 / 10; background: linear-gradient(180deg, #2a2a2f, #171719); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .commerce-collection-media img { width: 100%; height: 100%; object-fit: cover; }
+  .commerce-collection-media svg { width: 60%; height: auto; opacity: .35; }
+  .commerce-collection-body { display: flex; flex-direction: column; gap: .35rem; padding: 1.25rem 1.5rem 1.5rem; }
+  .commerce-collection-title { font-family: var(--font-display); font-size: 1.3rem; color: #fff; }
+  .commerce-collection-card:hover .commerce-collection-title { color: var(--accent-bright); }
+  .commerce-empty { display: flex; flex-direction: column; align-items: center; gap: 1.25rem; text-align: center; padding: clamp(2rem, 6vw, 4rem) 1.5rem; }
+{% endstyle %}
+
+<section class="banner" data-mount aria-labelledby="commerce-collections-title">
+  <div class="banner-content">
+    <h1 class="banner-title" id="commerce-collections-title">Collections</h1>
+    <p class="banner-subtitle">Everything in the store, grouped.</p>
+  </div>
+</section>
+
+<section class="section animate" aria-label="Collections">
+  <div class="container">
+    {%- if collections.size > 0 -%}
+      <div class="pack-grid">
+        {%- for collection in collections -%}
+          <a class="glass-card glass-card--hover commerce-collection-card" href="{{ collection.url }}">
+            <div class="commerce-collection-media">
+              {%- if collection.image -%}
+                {%- assign collection_alt = collection.image.alt | default: collection.title | escape -%}
+                {{ collection.image | image_url: width: 600 | image_tag: loading: 'lazy', alt: collection_alt, widths: '300,450,600', sizes: '(max-width: 700px) 90vw, 380px' }}
+              {%- elsif collection.products.first.featured_image -%}
+                {%- assign collection_alt = collection.title | escape -%}
+                {{ collection.products.first.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: collection_alt, widths: '300,450,600', sizes: '(max-width: 700px) 90vw, 380px' }}
+              {%- else -%}
+                {{ 'collection-1' | placeholder_svg_tag: 'commerce-collection-placeholder' }}
+              {%- endif -%}
+            </div>
+            <div class="commerce-collection-body">
+              <h2 class="commerce-collection-title">{{ collection.title | escape }}</h2>
+              <span class="commerce-line-sub description">
+                {{ collection.all_products_count }} {% if collection.all_products_count == 1 %}product{% else %}products{% endif %}
+              </span>
+            </div>
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="glass-card glass-card--pad commerce-empty">
+        <i data-icon="tags" aria-hidden="true"></i>
+        <h2 class="section-subtitle">No collections yet</h2>
+        <p class="section-description">Nothing has been grouped into a collection. Browse every product instead.</p>
+        <div class="nice-button-box">
+          <a class="nice-button btn-md" href="{{ routes.all_products_collection_url }}">Shop all products</a>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</section>

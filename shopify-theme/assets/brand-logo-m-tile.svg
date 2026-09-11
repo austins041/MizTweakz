@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="M logo">
+  <!-- The owner's "M" mark on a light rounded tile so it stays legible on the dark site (app-icon treatment). -->
+  <defs>
+    <linearGradient id="mg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3b3b3b"/>
+      <stop offset=".55" stop-color="#181818"/>
+      <stop offset="1" stop-color="#050505"/>
+    </linearGradient>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#e9e9e9"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="240" height="240" rx="56" fill="url(#tile)"/>
+  <path fill="url(#mg)" transform="translate(128 128) scale(.74) translate(-128 -128)" d="M24 220V36h70l34 82 34-82h70v184h-52V108l-34 78h-36l-34-78v112z"/>
+</svg>

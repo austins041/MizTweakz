@@ -1,0 +1,159 @@
+{% comment %}
+  Affiliates page. Ported from the static site/affiliates/index.html: banner,
+  partner card, the three custom step icons, commission tiers, FAQ and CTA.
+  Header and footer come from the layout; site.js drives [data-mount],
+  .animate and the [data-render="faq"] list.
+{% endcomment %}
+
+{{ 'page-affiliates.css' | asset_url | stylesheet_tag }}
+
+  <!-- 1. BANNER (Paragon ShortBanner "Our Partners" + anchor pills) -->
+  <section class="banner" data-mount aria-labelledby="affiliates-title">
+    <div class="banner-content">
+      <h1 class="banner-title" id="affiliates-title">Affiliate Program</h1>
+      <div class="banner-pills">
+        <a class="title-tag nav-tag" href="#program" style="--color:#bc312a">Earn $2,500+ Monthly</a>
+        <a class="title-tag nav-tag" href="#how" style="--color:#e85a51">How It Works</a>
+        <a class="title-tag nav-tag" href="#commission" style="--color:#ffffff">Commission</a>
+        <a class="title-tag nav-tag title-tag--gradient" href="#faq"><span>FAQ</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. PARTNER CARD (Paragon PartnerCard: banner art, round icon, two panels) -->
+  <section class="section-with-bar partner-card-container section animate" id="program" aria-labelledby="program-title">
+    <article class="partner-card glass-card">
+      <div class="partner-head">
+        <div class="partner-banner"><img src="{{ 'affiliates-banner.svg' | asset_url }}" width="1114" height="260" alt=""></div>
+        <span class="partner-icon" aria-hidden="true"><i data-icon="users"></i></span>
+      </div>
+      <div class="panel-box">
+        <div class="partner-panel">
+          <h2 class="partner-title" id="program-title">Earn $2,500+ Monthly</h2>
+          <p class="partner-desc">Earn Money Sharing Miz Tweakz, There is NO CAP to How Much Our Partners Can Make!</p>
+          <hr class="separator-dots">
+          <div class="code-row">
+            <span>Commission:</span>
+            <span class="discount-tag"><i data-icon="tags"></i>20% to start</span>
+            <span class="discount-tag" style="--color:#e85a51"><i data-icon="crown"></i>Up to 30%</span>
+          </div>
+          <div class="partner-actions">
+            <div class="nice-button-box"><a class="nice-button btn-md" href="https://miztweakz.goaffpro.com/create-account" target="_blank" rel="noopener noreferrer">Start Now <i data-icon="external"></i><span class="sr-only">(opens the affiliate portal in a new tab)</span></a></div>
+            <a class="btn-clear discord" href="https://discord.gg/tT4HSfAWrt" target="_blank" rel="noopener noreferrer"><span>Join Discord</span><i data-icon="discord"></i></a>
+          </div>
+        </div>
+        <div class="partner-tiles">
+          <div class="corner-dots">
+            <h3>Instant Approval</h3>
+            <p>Sign up and get started immediately. Your account is approved instantly.</p>
+          </div>
+          <div class="corner-dots">
+            <h3>Up to 30% Commission</h3>
+            <p>Up to 30% commission on every sale you generate.</p>
+          </div>
+          <div class="corner-dots">
+            <h3>Unique Discount Code</h3>
+            <p>Give your audience savings with a unique discount code while boosting your sales!</p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- 3. HOW IT WORKS (3 steps, Paragon how-it-works grid) -->
+  <section class="how-it-works section animate" id="how" aria-labelledby="how-title">
+    <div class="section-header">
+      <span class="section-label">How It Works</span>
+      <h2 class="section-title" id="how-title">Three Steps To Your First Payout</h2>
+      <p class="section-subtitle section-subtitle--plain">Anyone is welcome to join. You don't need to be a content creator.</p>
+    </div>
+    <div class="steps-container">
+      <article class="step-card glass-card">
+        <span class="step-num" aria-hidden="true">01</span>
+        <span class="step-icon"><i data-icon="aff-account"></i></span>
+        <h3>Create your account</h3>
+        <p>Sign up on the MIZTWEAKZ affiliate portal. Your account is approved instantly, so you can get started immediately.</p>
+      </article>
+      <article class="step-card glass-card">
+        <span class="step-num" aria-hidden="true">02</span>
+        <span class="step-icon"><i data-icon="aff-share"></i></span>
+        <h3>Share your code</h3>
+        <p>Drop your unique discount code and referral link in your videos, streams, bios. Or just send it to friends who game.</p>
+      </article>
+      <article class="step-card glass-card">
+        <span class="step-num" aria-hidden="true">03</span>
+        <span class="step-icon"><i data-icon="aff-earn"></i></span>
+        <h3>Earn on every sale</h3>
+        <p>Start at 20% commission and climb the tiers as you earn more with us. Up to 30% on every sale you generate.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 4. COMMISSION TIERS -->
+  <section class="section animate" id="commission" aria-labelledby="commission-title">
+    <div class="section-header">
+      <span class="section-label">Partner Tiers</span>
+      <h2 class="section-title" id="commission-title">Your Commission Grows With You</h2>
+      <p class="section-subtitle section-subtitle--plain">Our compensation structure is tiered, meaning your commission will increase as you earn more with us.</p>
+    </div>
+    <div class="tier-grid">
+      <article class="tier-card glass-card glass-card--hover" style="--color:#ffffff">
+        <span class="tier-name">Starter</span>
+        <span class="tier-rate">20%</span>
+        <p>The starting commission rate is 20%. Sign up and get started immediately. Your account is approved instantly.</p>
+        <ul class="features">
+          <li><i data-icon="check"></i><span>Instant account approval</span></li>
+          <li><i data-icon="check"></i><span>Unique discount code for your audience</span></li>
+          <li><i data-icon="check"></i><span>Track clicks and sales in your dashboard</span></li>
+        </ul>
+      </article>
+      <article class="tier-card glass-card glass-card--hover" style="--color:#e85a51">
+        <span class="tier-name">Growth</span>
+        <span class="tier-rate">25%</span>
+        <p>Your commission increases as you earn more with us. The more MIZTWEAKZ you share, the bigger your cut of every sale.</p>
+        <ul class="features">
+          <li><i data-icon="check"></i><span>Rate climbs with your total sales</span></li>
+          <li><i data-icon="check"></i><span>Same discount code, bigger payouts</span></li>
+          <li><i data-icon="check"></i><span>Monetize your channel or just refer friends</span></li>
+        </ul>
+      </article>
+      <article class="tier-card glass-card glass-card--hover" style="--color:#bc312a">
+        <span class="tier-name">Top Tier</span>
+        <span class="tier-rate tier-rate--gradient">30%</span>
+        <p>Up to 30% commission on every sale you generate. And there is NO CAP to how much our partners can make.</p>
+        <ul class="features">
+          <li><i data-icon="check"></i><span>Our highest commission rate</span></li>
+          <li><i data-icon="check"></i><span>No cap on earnings</span></li>
+          <li><i data-icon="check"></i><span>Give your audience savings while boosting your sales</span></li>
+        </ul>
+      </article>
+    </div>
+    <p class="no-cap"><strong>NO CAP.</strong> There is no limit to how much our partners can make.</p>
+  </section>
+
+  <!-- 6. FAQ (verbatim affiliate FAQ from data.js) -->
+  <section class="faq-section section animate" id="faq" aria-labelledby="faq-title">
+    <div class="section-header">
+      <span class="section-label">Support</span>
+      <h2 class="faq-title" id="faq-title">FAQ</h2>
+      <p class="faq-subtitle">Everything you need to know about the affiliate program</p>
+    </div>
+    <div class="faq-list" data-render="faq" data-source="affiliateFaqs"></div>
+    <div class="faq-cta">
+      <p class="cta-text">Still have questions?</p>
+      <a class="cta-link" href="https://discord.gg/tT4HSfAWrt" target="_blank" rel="noopener noreferrer">Join our Discord <i data-icon="arrow-right"></i></a>
+    </div>
+  </section>
+
+  <!-- 7. CTA CARD, GoAffPro portal + Discord -->
+  <section class="final-cta glass-card animate" aria-labelledby="cta-title">
+    <div class="cta-glow" aria-hidden="true"></div>
+    <span class="section-label">Free to join · Approved instantly</span>
+    <h2 id="cta-title">Ready to start earning?</h2>
+    <p>Create your affiliate account, grab your unique discount code and start earning on every sale. It's a free and easy way to start earning.</p>
+    <div class="cta-group">
+      <div class="nice-button-box"><a class="nice-button btn-lg" href="https://miztweakz.goaffpro.com/create-account" target="_blank" rel="noopener noreferrer">Start Now <i data-icon="external"></i><span class="sr-only">(opens the affiliate portal in a new tab)</span></a></div>
+      <a class="btn-clear discord" href="https://discord.gg/tT4HSfAWrt" target="_blank" rel="noopener noreferrer"><span>Join the Discord</span><i data-icon="discord"></i></a>
+    </div>
+  </section>
+

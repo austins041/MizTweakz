@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1f1f21">
+
+  <title>{{ page_title }}{% if current_page != 1 %} | {{ 'general.meta.page' | t: page: current_page }}{% endif %}{% unless page_title contains shop.name %} | {{ shop.name }}{% endunless %}</title>
+
+  {% if page_description %}
+    <meta name="description" content="{{ page_description | escape }}">
+  {% endif %}
+
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  {%- comment -%} Favicons ship as flat theme assets (see THEME-NOTES.md). {%- endcomment -%}
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ 'brand-favicon-32.png' | asset_url }}">
+  <link rel="apple-touch-icon" href="{{ 'brand-favicon-180.png' | asset_url }}">
+
+  {%- assign og_image = 'brand-og.jpg' | asset_url -%}
+  {%- unless og_image contains 'http' -%}
+    {%- assign og_image = og_image | prepend: 'https:' -%}
+  {%- endunless -%}
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ shop.name }}">
+  <meta property="og:title" content="{{ page_title | escape }}">
+  {% if page_description %}
+    <meta property="og:description" content="{{ page_description | escape }}">
+  {% endif %}
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:image" content="{{ og_image }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="{{ shop.name | escape }} logo">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page_title | escape }}">
+  {% if page_description %}
+    <meta name="twitter:description" content="{{ page_description | escape }}">
+  {% endif %}
+  <meta name="twitter:image" content="{{ og_image }}">
+
+  {{ content_for_header }}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap">
+  {{ 'site.css' | asset_url | stylesheet_tag }}
+
+  {%- comment -%} Theme settings override the two accent tokens. Defaults match the source design exactly. {%- endcomment -%}
+  {% style %}
+    :root {
+      {% if settings.accent_color != blank %}
+        --accent: {{ settings.accent_color }};
+        --accent-rgb: {{ settings.accent_color.red }}, {{ settings.accent_color.green }}, {{ settings.accent_color.blue }};
+      {% endif %}
+      {% if settings.accent_bright_color != blank %}
+        --accent-bright: {{ settings.accent_bright_color }};
+      {% endif %}
+    }
+  {% endstyle %}
+
+  <script>document.documentElement.classList.add('js');</script>
+
+  {%- comment -%}
+    Shopify assets are flat and live on the CDN, so data.js cannot hard-code "/assets/img/...".
+    This hands it the real asset folder URL before the deferred scripts run.
+  {%- endcomment -%}
+  <script>
+    window.MZ = window.MZ || {};
+    window.MZ.assetBase = {{ 'brand-favicon-32.png' | asset_url | split: 'brand-favicon-32.png' | first | json }};
+    window.MZ.downloadUrl = {{ settings.download_url | default: '' | json }};
+  </script>
+
+  <script src="{{ 'data.js' | asset_url }}" defer></script>
+  <script src="{{ 'site.js' | asset_url }}" defer></script>
+</head>
+<body class="template-{{ template.name }}" data-page="{{ template.name }}">
+  <a href="#main-content" class="skip-link">{{ 'general.accessibility.skip_to_content' | t }}</a>
+
+  {% section 'header' %}
+
+  <main id="main-content" class="page{% if template.name == 'index' %} home-page{% endif %}" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  {% section 'footer' %}
+</body>
+</html>

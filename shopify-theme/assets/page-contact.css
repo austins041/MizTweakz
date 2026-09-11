@@ -1,0 +1,54 @@
+/* =========================================================================
+   MIZTWEAKZ — page-contact.css  (Paragon ContactView: banner → info card + form card)
+   Loaded after site.css on /contact/ only.
+   ========================================================================= */
+
+.cards-container { display: flex; flex-wrap: wrap; justify-content: center; align-items: stretch; gap: 50px; width: 100%; max-width: 1200px; margin: 0 auto; }
+
+/* ---- contact method cards (Paragon ContactInfoCard) ---- */
+.info-column { display: flex; flex-direction: column; gap: 20px; width: min(340px, 100%); }
+.info-card { --color: var(--accent); flex: 1; padding: 28px; display: flex; flex-direction: column; gap: .75rem; }
+.info-icon {
+  width: 60px; height: 60px; border-radius: 50%;
+  display: grid; place-items: center;
+  color: var(--color);
+  background: rgba(var(--ambient-rgb), calc(.18 * var(--glow, 1)));
+  border: 1px solid rgba(var(--ambient-rgb), calc(.40 * var(--glow, 1)));
+}
+.info-icon .icon { width: 26px; height: 26px; }
+.info-title { font-size: 1.25rem; font-weight: 600; }
+.info-text { color: var(--text-70); font-size: .95rem; line-height: 1.7; }
+.info-link { color: #fff; font-weight: 500; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .3); transition: text-decoration-color .2s ease, color .2s ease; word-break: break-all; }
+.info-link:hover { color: var(--accent); text-decoration-color: var(--accent); }
+.info-card .btn-clear, .info-card .social-links { margin-top: auto; }
+.info-card .form-note { margin-top: auto; }
+
+/* ---- form card (Paragon ContactFormCard) ---- */
+.contact-card { width: min(550px, 100%); padding: 40px; display: flex; flex-direction: column; gap: 1.1rem; }
+.contact-card .form-intro { color: var(--text-70); font-size: .95rem; margin-top: -.5rem; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-row { display: flex; flex-direction: column; }
+.form-optional { color: var(--text-50); font-weight: 400; font-size: .85em; }
+.form-required { color: var(--accent); }
+.form-input[aria-invalid="true"], .form-textarea[aria-invalid="true"] { border-color: rgba(239, 68, 68, .6); }
+.char-limit-hint { margin-top: 4px; font-size: .8rem; text-align: right; color: var(--text-50); }
+.char-limit-hint.is-limit { color: var(--error); }
+.discord-note .icon { color: var(--accent); width: 16px; height: 16px; }
+.status-message[hidden] { display: none; }
+.status-message a { color: inherit; text-decoration: underline; }
+.status-message p + p { margin-top: .4rem; }
+.submit-btn { align-self: flex-start; }
+.submit-btn[disabled] { opacity: .6; pointer-events: none; }
+
+/* ---- responsive (Paragon: ≤1000 stack, form first; ≤630 padding 25px) ---- */
+@media (max-width: 1000px) {
+  .cards-container { flex-direction: column; align-items: center; gap: 30px; }
+  .contact-card { order: 1; }
+  .info-column { order: 2; width: min(550px, 100%); }
+}
+@media (max-width: 630px) {
+  .contact-card, .info-card { padding: 25px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .submit-btn { align-self: stretch; }
+  .info-link { display: inline-block; padding: 9px 0; } /* 44px tap area for the two mailto links */
+}

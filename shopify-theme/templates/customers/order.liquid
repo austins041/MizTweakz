@@ -1,0 +1,121 @@
+{% comment %}
+  A single past order. Header and footer come from the layout.
+{% endcomment %}
+
+{% style %}
+  .commerce-order-table { width: 100%; border-collapse: collapse; }
+  .commerce-order-table th, .commerce-order-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--hairline-soft); vertical-align: top; }
+  .commerce-order-table th { font-family: var(--font-display); font-weight: 400; color: var(--text-50); font-size: .85rem; text-transform: uppercase; letter-spacing: .08em; }
+  .commerce-order-table td a { text-decoration: underline; }
+  .commerce-order-table .is-right { text-align: right; }
+  .commerce-scroll { width: 100%; overflow-x: auto; }
+  .commerce-panel { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+  .commerce-panel h2 { font-family: var(--font-display); font-size: 1.3rem; color: #fff; }
+  .commerce-addresses { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+  .commerce-order-meta { display: flex; flex-wrap: wrap; gap: 10px 22px; font-size: .9rem; color: var(--text-50); }
+  .commerce-variant-note { font-size: .85rem; color: var(--text-50); }
+{% endstyle %}
+
+<section class="banner" data-mount aria-labelledby="commerce-order-title">
+  <div class="banner-content">
+    <h1 class="banner-title" id="commerce-order-title">Order {{ order.name }}</h1>
+    <p class="banner-subtitle">Placed {{ order.created_at | date: '%B %e, %Y' }}</p>
+  </div>
+</section>
+
+<section class="section animate" aria-label="Order detail">
+  <div class="container container--narrow">
+
+    <div class="glass-card commerce-panel">
+      <div class="commerce-order-meta">
+        <span class="status-badge{% if order.financial_status == 'paid' %} status-badge--success{% endif %}">{{ order.financial_status_label }}</span>
+        <span class="status-badge{% if order.fulfillment_status == 'fulfilled' %} status-badge--success{% endif %}">{{ order.fulfillment_status_label }}</span>
+        {%- if order.cancelled -%}
+          <span class="status-badge status-badge--error">Cancelled {{ order.cancelled_at | date: '%B %e, %Y' }}</span>
+        {%- endif -%}
+      </div>
+
+      <div class="commerce-scroll">
+        <table class="commerce-order-table">
+          <caption class="sr-only">Items in order {{ order.name }}</caption>
+          <thead>
+            <tr>
+              <th scope="col">Item</th>
+              <th scope="col">Price</th>
+              <th scope="col">Qty</th>
+              <th scope="col" class="is-right">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%- for line_item in order.line_items -%}
+              <tr>
+                <td>
+                  {%- if line_item.product.url != blank -%}
+                    <a href="{{ line_item.product.url }}">{{ line_item.product.title | escape }}</a>
+                  {%- else -%}
+                    {{ line_item.title | escape }}
+                  {%- endif -%}
+                  {%- if line_item.variant.title != blank and line_item.variant.title != 'Default Title' -%}
+                    <br><span class="commerce-variant-note">{{ line_item.variant.title | escape }}</span>
+                  {%- endif -%}
+                </td>
+                <td>{{ line_item.price | money }}</td>
+                <td>{{ line_item.quantity }}</td>
+                <td class="is-right">{{ line_item.final_line_price | money }}</td>
+              </tr>
+            {%- endfor -%}
+          </tbody>
+          <tfoot>
+            <tr>
+              <th scope="row" colspan="3">Subtotal</th>
+              <td class="is-right">{{ order.line_items_subtotal_price | money }}</td>
+            </tr>
+            {%- for discount_application in order.cart_level_discount_applications -%}
+              <tr>
+                <th scope="row" colspan="3">{{ discount_application.title | escape }}</th>
+                <td class="is-right">-{{ discount_application.total_allocated_amount | money }}</td>
+              </tr>
+            {%- endfor -%}
+            {%- for shipping_method in order.shipping_methods -%}
+              <tr>
+                <th scope="row" colspan="3">Shipping ({{ shipping_method.title | escape }})</th>
+                <td class="is-right">{{ shipping_method.price | money }}</td>
+              </tr>
+            {%- endfor -%}
+            {%- for tax_line in order.tax_lines -%}
+              <tr>
+                <th scope="row" colspan="3">Tax ({{ tax_line.title | escape }} {{ tax_line.rate_percentage }}%)</th>
+                <td class="is-right">{{ tax_line.price | money }}</td>
+              </tr>
+            {%- endfor -%}
+            <tr>
+              <th scope="row" colspan="3">Total</th>
+              <td class="is-right">{{ order.total_price | money }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <div class="commerce-addresses">
+      {%- if order.billing_address -%}
+        <div class="glass-card commerce-panel">
+          <h2>Billing address</h2>
+          <address class="description" style="font-style: normal;">{{ order.billing_address | format_address }}</address>
+        </div>
+      {%- endif -%}
+
+      {%- if order.shipping_address -%}
+        <div class="glass-card commerce-panel">
+          <h2>Shipping address</h2>
+          <address class="description" style="font-style: normal;">{{ order.shipping_address | format_address }}</address>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <p style="margin-top: 1.5rem;">
+      <a class="promo-link" href="{{ routes.account_url }}">Back to your account <i data-icon="arrow-right"></i></a>
+    </p>
+
+  </div>
+</section>

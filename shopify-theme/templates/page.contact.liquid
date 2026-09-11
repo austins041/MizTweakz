@@ -1,0 +1,143 @@
+{% comment %}
+  Contact page. Ported from the static site/contact/index.html with one change:
+  the static mailto form is now Shopify's real contact form, so messages are
+  delivered to the store's notification email instead of opening a mail client.
+  The contact-method cards and social links are unchanged.
+{% endcomment %}
+
+{{ 'page-contact.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  .contact-card .status-message ul { display: flex; flex-direction: column; gap: .25rem; margin: .4rem 0 0; padding-left: 1.1rem; list-style: disc; }
+{% endstyle %}
+
+  <!-- 1. BANNER (Paragon ShortBanner "Contact Us", no pills) -->
+  <section class="banner" data-mount aria-labelledby="contact-title">
+    <div class="banner-content">
+      <h1 class="banner-title" id="contact-title">Contact Us</h1>
+    </div>
+  </section>
+
+  <!-- 2. CARDS (Paragon .cards-container: info card left, form card right; form first on mobile) -->
+  <section class="cards-container section animate" id="contact" aria-label="Contact options">
+    <div class="info-column">
+      <article class="glass-card info-card" style="--color:#4296fe">
+        <span class="info-icon" aria-hidden="true"><i data-icon="headset"></i></span>
+        <h2 class="info-title">Direct Support</h2>
+        <p class="info-text">Open a Discord ticket for the fastest response. Tickets go straight to the team and keep the whole conversation in one place.</p>
+        <a class="btn-clear discord" href="https://discord.gg/w9kZpXtkjR" target="_blank" rel="noopener noreferrer"><span>Open a Discord ticket</span><i data-icon="discord"></i></a>
+      </article>
+      <article class="glass-card info-card">
+        <span class="info-icon" aria-hidden="true"><i data-icon="envelope"></i></span>
+        <h2 class="info-title">Email</h2>
+        <p class="info-text">
+          Support: <a class="info-link" href="mailto:miztweakzteam@gmail.com">miztweakzteam@gmail.com</a>
+        </p>
+        <p class="form-note"><i data-icon="info"></i>Email responses are usually slower than Discord tickets.</p>
+      </article>
+      <article class="glass-card info-card" style="--color:#e85a51">
+        <span class="info-icon" aria-hidden="true"><i data-icon="youtube"></i></span>
+        <h2 class="info-title">Follow MIZTWEAKZ</h2>
+        <p class="info-text">Benchmarks, tutorials and new pack drops land on our channels first.</p>
+        <div class="social-links">
+          <a class="social-btn" href="https://www.youtube.com/@MIZTWEAKZ" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i data-icon="youtube"></i></a>
+          <a class="social-btn" href="https://www.tiktok.com/@miz_tweakz" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i data-icon="tiktok"></i></a>
+          <a class="social-btn" href="https://www.instagram.com/miz_tweakz" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i data-icon="instagram"></i></a>
+          <a class="social-btn" href="https://discord.gg/tT4HSfAWrt" target="_blank" rel="noopener noreferrer" aria-label="Discord"><i data-icon="discord"></i></a>
+        </div>
+      </article>
+    </div>
+
+    {% form 'contact', id: 'contact-form', class: 'glass-card contact-card' %}
+      <h2 class="info-title" id="form-title">Send us a message</h2>
+
+      {% if form.posted_successfully? %}
+        <div class="status-message status-message--success" id="cf-success" role="status" tabindex="-1">
+          <p><strong>Thanks, your message is on its way.</strong> We will reply to the email address you gave us. If you need an answer sooner, open a Discord ticket.</p>
+        </div>
+      {% endif %}
+
+      {% if form.errors %}
+        <div class="status-message status-message--error" id="cf-error" role="alert" tabindex="-1">
+          <p><strong>Your message was not sent.</strong> Please check the fields below.</p>
+          <ul>
+            {% for field in form.errors %}
+              <li>
+                {%- if field == 'form' -%}
+                  {{ form.errors.messages[field] }}
+                {%- else -%}
+                  {{ field | capitalize }} {{ form.errors.messages[field] }}
+                {%- endif -%}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <p class="form-intro">Fields marked <span class="form-required" aria-hidden="true">*</span> are required.</p>
+
+      <div class="form-grid">
+        <div class="form-row">
+          <label class="form-label" for="cf-name">Name</label>
+          <input class="form-input" id="cf-name" name="contact[name]" type="text" autocomplete="name" placeholder="Your name" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="cf-email">Email <span class="form-required" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
+          <input class="form-input" id="cf-email" name="contact[email]" type="email" required autocomplete="email" placeholder="your@email.com" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label" for="cf-phone">Phone number <span class="form-optional">(optional)</span></label>
+        <input class="form-input" id="cf-phone" name="contact[phone]" type="tel" autocomplete="tel" placeholder="+1 555 000 0000" value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}">
+      </div>
+
+      <div class="form-row">
+        <label class="form-label" for="cf-message">Message <span class="form-required" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
+        <textarea class="form-textarea" id="cf-message" name="contact[body]" required maxlength="1000" placeholder="Describe what you need help with..." aria-describedby="cf-count">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+        <div class="char-limit-hint" id="cf-count" aria-live="polite">0 / 1000</div>
+      </div>
+
+      <p class="form-note discord-note"><i data-icon="envelope"></i><span>Your message goes straight to the MIZTWEAKZ team. We reply to the email address you give us here.</span></p>
+
+      <button type="submit" class="btn-clear submit-btn" id="cf-submit"><span>Send Message</span><span class="btn-clear__arrow"><i data-icon="arrow-right"></i></span></button>
+    {% endform %}
+  </section>
+
+  <!-- 3. DISCORD CTA (verbatim contact-page copy) -->
+  <section class="final-cta glass-card animate" aria-labelledby="discord-title">
+    <div class="cta-glow" aria-hidden="true"></div>
+    <span class="section-label">Fastest response</span>
+    <h2 id="discord-title">Or Join Our Discord</h2>
+    <p>For the fastest response time on any needs or concerns join our discord and open a support ticket!</p>
+    <div class="cta-group">
+      <a class="btn-clear discord" href="https://discord.gg/w9kZpXtkjR" target="_blank" rel="noopener noreferrer"><span>DISCORD</span><i data-icon="discord"></i></a>
+    </div>
+  </section>
+
+{% raw %}
+<script>
+/* Contact page: live character count on the message field, and focus the status
+   message after a submit so the result is announced and visible. */
+(function () {
+  'use strict';
+  function ready() {
+    var message = document.getElementById('cf-message');
+    var count = document.getElementById('cf-count');
+    if (message && count) {
+      var MAX = parseInt(message.getAttribute('maxlength'), 10) || 1000;
+      var update = function () {
+        var n = message.value.length;
+        count.textContent = n + ' / ' + MAX;
+        count.classList.toggle('is-limit', n >= MAX);
+      };
+      message.addEventListener('input', update);
+      update();
+    }
+    var status = document.getElementById('cf-success') || document.getElementById('cf-error');
+    if (status) status.focus({ preventScroll: false });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready); else ready();
+})();
+</script>
+{% endraw %}

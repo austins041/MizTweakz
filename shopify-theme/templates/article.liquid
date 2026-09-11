@@ -1,0 +1,145 @@
+{% comment %}
+  Single article. Banner with the title and date, the article body in the
+  narrow prose column, and the comment thread plus comment form when the blog
+  has comments enabled.
+{% endcomment %}
+
+{{ 'page-legal.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  .legal-layout--single { grid-template-columns: minmax(0, 800px); }
+  /* this template is one of the dense ones (static .page--tight) */
+  #main-content { gap: clamp(2rem, 4vw, 4rem); }
+
+  .article-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .5rem; font-family: var(--font-display); font-size: .85rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .article-meta .meta-dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .6; }
+  .article-hero { border-radius: var(--radius-lg); overflow: hidden; margin-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+  .article-hero img { display: block; width: 100%; height: auto; }
+  .article-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; }
+  .comments { display: flex; flex-direction: column; gap: 1rem; margin: 0 0 2rem; }
+  .comment-body { color: var(--text); line-height: 1.7; }
+  .comment-meta { margin-top: .6rem; font-size: .85rem; color: var(--muted); }
+  .comment-form { display: flex; flex-direction: column; gap: 1rem; }
+  .comment-form .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .comment-form .form-row { display: flex; flex-direction: column; }
+  .comment-form .status-message ul { display: flex; flex-direction: column; gap: .25rem; margin: .4rem 0 0; padding-left: 1.1rem; list-style: disc; }
+  .comment-form button[type="submit"] { align-self: flex-start; }
+  @media (max-width: 630px) { .comment-form .form-grid { grid-template-columns: 1fr; } }
+{% endstyle %}
+
+  <section class="banner banner--legal" data-mount aria-labelledby="article-title">
+    <div class="banner-content">
+      <h1 class="banner-title" id="article-title">{{ article.title }}</h1>
+      <p class="article-meta">
+        <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%B %-d, %Y' }}</time>
+        {%- if article.author != blank %}
+          <span class="meta-dot" aria-hidden="true"></span>
+          <span>{{ article.author }}</span>
+        {%- endif %}
+      </p>
+    </div>
+  </section>
+
+  <div class="legal-layout legal-layout--single">
+    <div class="legal-content">
+
+      {% if article.image %}
+        <div class="article-hero">
+          <img src="{{ article.image | image_url: width: 1600 }}" width="{{ article.image.width }}" height="{{ article.image.height }}" alt="{{ article.image.alt | escape }}" fetchpriority="high">
+        </div>
+      {% endif %}
+
+      <div class="legal-section legal-prose">
+        {{ article.content }}
+      </div>
+
+      {% if article.tags.size > 0 %}
+        <div class="article-tags">
+          {% for tag in article.tags %}
+            <a class="title-tag nav-tag" href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if blog.comments_enabled? %}
+        <section class="legal-section" id="comments" aria-labelledby="comments-title">
+          <h2 id="comments-title">
+            {%- if article.comments_count > 0 -%}
+              {{ article.comments_count }} comment{% if article.comments_count > 1 %}s{% endif %}
+            {%- else -%}
+              Comments
+            {%- endif -%}
+          </h2>
+
+          {% if article.comments_count > 0 %}
+            <div class="comments">
+              {% for comment in article.comments %}
+                <article class="glass-card glass-card--pad" id="comment-{{ comment.id }}">
+                  <div class="comment-body">{{ comment.content }}</div>
+                  <p class="comment-meta">{{ comment.author }} <span class="meta-dot" aria-hidden="true"></span> <time datetime="{{ comment.created_at | date: '%Y-%m-%d' }}">{{ comment.created_at | date: '%B %-d, %Y' }}</time></p>
+                </article>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {% form 'new_comment', article, class: 'glass-card glass-card--pad comment-form' %}
+            <h3>Leave a comment</h3>
+
+            {% if form.posted_successfully? %}
+              <div class="status-message status-message--success" role="status" tabindex="-1">
+                {%- if blog.moderated? -%}
+                  <p>Thanks. Your comment was received and will appear once it has been approved.</p>
+                {%- else -%}
+                  <p>Thanks. Your comment has been posted.</p>
+                {%- endif -%}
+              </div>
+            {% endif %}
+
+            {% if form.errors %}
+              <div class="status-message status-message--error" role="alert" tabindex="-1">
+                <p><strong>Your comment was not posted.</strong> Please check the fields below.</p>
+                <ul>
+                  {% for field in form.errors %}
+                    <li>
+                      {%- if field == 'form' -%}
+                        {{ form.errors.messages[field] }}
+                      {%- else -%}
+                        {{ field | capitalize }} {{ form.errors.messages[field] }}
+                      {%- endif -%}
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+
+            <div class="form-grid">
+              <div class="form-row">
+                <label class="form-label" for="comment-author">Name</label>
+                <input class="form-input" id="comment-author" name="comment[author]" type="text" required autocomplete="name" value="{{ form.author }}">
+              </div>
+              <div class="form-row">
+                <label class="form-label" for="comment-email">Email</label>
+                <input class="form-input" id="comment-email" name="comment[email]" type="email" required autocomplete="email" value="{{ form.email }}">
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label" for="comment-body">Comment</label>
+              <textarea class="form-textarea" id="comment-body" name="comment[body]" required rows="6">{{ form.body }}</textarea>
+            </div>
+            {% if blog.moderated? %}
+              <p class="form-note"><i data-icon="info"></i><span>Comments are reviewed before they appear.</span></p>
+            {% endif %}
+            <button type="submit" class="btn-clear submit-btn"><span>Post comment</span><span class="btn-clear__arrow"><i data-icon="arrow-right"></i></span></button>
+          {% endform %}
+        </section>
+      {% endif %}
+
+      <footer class="legal-footer">
+        <div class="legal-links">
+          <a class="footer-link footer-link--internal" href="{{ blog.url }}">All posts <i data-icon="arrow-right"></i></a>
+          <a class="footer-link footer-link--internal" href="/pages/contact">Contact Us <i data-icon="arrow-right"></i></a>
+        </div>
+      </footer>
+
+    </div>
+  </div>

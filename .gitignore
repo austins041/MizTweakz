@@ -11,3 +11,7 @@ desktop.ini
 
 # Internal study of the desktop app backend, kept local (owner decision 2026-09-10)
 docs/app-study.md
+
+# Build artifacts: rebuild the zip from shopify-theme/, video is already in site/assets/video/
+miztweakz-theme.zip
+theme-extras/

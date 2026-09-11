@@ -1,0 +1,289 @@
+{% comment %}
+  Product template. This is the page that takes the money, so everything the
+  buyer needs is server rendered and the form works with JavaScript disabled:
+  the variant <select>, the quantity field and the submit button are a plain
+  Shopify product form, and the inline script only refreshes the price and the
+  button label after a variant change.
+
+  The layout already provides <main class="page">, the header and the footer,
+  so this template emits page sections only.
+{% endcomment %}
+
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign featured_image = product.featured_image -%}
+{%- if featured_image -%}
+  {%- assign featured_alt = featured_image.alt | default: product.title | escape -%}
+{%- else -%}
+  {%- assign featured_alt = product.title | escape -%}
+{%- endif -%}
+{%- assign on_sale = false -%}
+{%- if current_variant.compare_at_price > current_variant.price -%}
+  {%- assign on_sale = true -%}
+{%- endif -%}
+
+{% style %}
+  .commerce-stage { padding: 18px; width: 100%; max-width: 620px; display: flex; align-items: center; justify-content: center; }
+  .commerce-stage img, .commerce-stage svg { width: 100%; height: auto; border-radius: 14px; }
+  .commerce-thumbs { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
+  .commerce-thumb { width: 72px; height: 72px; padding: 4px; border-radius: 10px; border: 1px solid var(--hairline); background: rgba(0, 0, 0, .3); overflow: hidden; }
+  .commerce-thumb img { width: 100%; height: 100%; object-fit: contain; }
+  .commerce-thumb[aria-current="true"] { border-color: var(--accent); }
+  .commerce-buy { display: flex; flex-direction: column; gap: 1rem; margin-top: .5rem; }
+  .commerce-field { display: flex; flex-direction: column; max-width: 320px; }
+  .commerce-meta { display: flex; flex-wrap: wrap; gap: 10px 22px; font-size: .9rem; color: var(--text-50); }
+  .commerce-prose { color: var(--text-70); line-height: 1.8; }
+  .commerce-prose :where(h2, h3, h4) { margin: 1.25rem 0 .5rem; color: #fff; }
+  .commerce-prose :where(p, ul, ol) { margin: 0 0 .75rem; }
+  .commerce-prose :where(ul, ol) { list-style: revert; padding-left: 1.25rem; }
+  .commerce-prose a { color: var(--accent-bright); text-decoration: underline; }
+  .commerce-card-title a:hover { color: var(--accent-bright); }
+  .commerce-card-media { display: block; }
+  .commerce-from { margin-left: 0; }
+  .commerce-placeholder { width: 70%; height: auto; opacity: .35; }
+{% endstyle %}
+
+<section class="section" data-mount aria-labelledby="commerce-product-title">
+  <div class="two-col two-col--text-left">
+
+    <div class="media-col">
+      <div>
+        <div class="glass-card commerce-stage">
+          {%- if featured_image -%}
+            {{ featured_image | image_url: width: 1100 | image_tag: loading: 'eager', alt: featured_alt, class: 'commerce-main-img' }}
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'commerce-main-img' }}
+          {%- endif -%}
+        </div>
+
+        {%- if product.images.size > 1 -%}
+          <div class="commerce-thumbs" role="group" aria-label="Product images">
+            {%- for image in product.images -%}
+              {%- assign thumb_alt = image.alt | default: product.title | escape -%}
+              {%- assign thumb_full = image | image_url: width: 1100 -%}
+              <button type="button"
+                      class="commerce-thumb"
+                      data-commerce-thumb
+                      data-full="{{ thumb_full }}"
+                      data-alt="{{ thumb_alt }}"
+                      {% if forloop.first %}aria-current="true"{% endif %}>
+                <span class="sr-only">Show image {{ forloop.index }} of {{ product.images.size }}</span>
+                {{ image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="text-col">
+      {%- if product.type != blank -%}
+        <span class="title-tag">{{ product.type | escape }}</span>
+      {%- endif -%}
+
+      <h1 class="section-title" id="commerce-product-title">{{ product.title | escape }}</h1>
+
+      <div class="price-row">
+        <span class="original-price" id="commerce-compare" {% unless on_sale %}hidden{% endunless %}>
+          {%- if current_variant.compare_at_price -%}{{ current_variant.compare_at_price | money }}{%- endif -%}
+        </span>
+        <span class="price" id="commerce-price">{{ current_variant.price | money }}</span>
+        <span class="sale-badge" id="commerce-sale" {% unless on_sale %}hidden{% endunless %}>Sale</span>
+      </div>
+
+      <p id="commerce-availability">
+        {%- if current_variant.available -%}
+          <span class="status-badge status-badge--success">In stock</span>
+        {%- else -%}
+          <span class="status-badge status-badge--error">Sold out</span>
+        {%- endif -%}
+      </p>
+
+      {% form 'product', product, id: 'commerce-product-form', novalidate: 'novalidate' %}
+        <div class="commerce-buy">
+          {%- if product.variants.size > 1 -%}
+            <div class="commerce-field">
+              <label class="form-label" for="commerce-variant-select">Option</label>
+              <select class="form-select" name="id" id="commerce-variant-select">
+                {%- for variant in product.variants -%}
+                  <option value="{{ variant.id }}"
+                          {% if variant.id == current_variant.id %}selected="selected"{% endif %}
+                          {% unless variant.available %}disabled="disabled"{% endunless %}>
+                    {{ variant.title }} - {{ variant.price | money }}{% unless variant.available %} (Sold out){% endunless %}
+                  </option>
+                {%- endfor -%}
+              </select>
+            </div>
+          {%- else -%}
+            <input type="hidden" name="id" id="commerce-variant-select" value="{{ current_variant.id }}">
+          {%- endif -%}
+
+          <div class="commerce-field">
+            <label class="form-label" for="commerce-quantity">Quantity</label>
+            <input class="form-input" type="number" id="commerce-quantity" name="quantity" value="1" min="1" step="1" inputmode="numeric" style="max-width: 140px;">
+          </div>
+
+          <div class="nice-button-box book-now-box" style="max-width: 320px;">
+            <button type="submit"
+                    name="add"
+                    id="commerce-add"
+                    class="nice-button btn-md"
+                    {% unless current_variant.available %}disabled="disabled"{% endunless %}>
+              <span data-add-label>{% if current_variant.available %}Add to cart{% else %}Sold out{% endif %}</span>
+            </button>
+          </div>
+        </div>
+      {% endform %}
+
+      {%- if product.description != blank -%}
+        <div class="commerce-prose">{{ product.description }}</div>
+      {%- endif -%}
+
+      {%- if product.vendor != blank or current_variant.sku != blank -%}
+        <div class="commerce-meta">
+          {%- if product.vendor != blank -%}
+            <span>Sold by {{ product.vendor | escape }}</span>
+          {%- endif -%}
+          {%- if current_variant.sku != blank -%}
+            <span class="mono" id="commerce-sku">SKU {{ current_variant.sku | escape }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <p class="form-note"><i data-icon="lock"></i><span>Secure checkout handled by Shopify.</span></p>
+    </div>
+
+  </div>
+</section>
+
+{%- if collection and collection.products.size > 1 -%}
+  <section class="section animate" aria-labelledby="commerce-more-title">
+    <div class="container">
+      <div class="section-header section-header--left">
+        <h2 class="section-title" id="commerce-more-title">More from {{ collection.title | escape }}</h2>
+      </div>
+      <div class="pack-grid" style="margin-top: 2rem;">
+        {%- assign shown = 0 -%}
+        {%- for item in collection.products -%}
+          {%- if item.id != product.id and shown < 3 -%}
+            {%- assign shown = shown | plus: 1 -%}
+            {% render 'commerce-product-card', product: item %}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+<script type="application/json" id="commerce-variant-data">
+[
+  {%- for variant in product.variants -%}
+    {
+      "id": {{ variant.id | json }},
+      "available": {{ variant.available | json }},
+      "price": {{ variant.price | money | json }},
+      "compare_at_price": {% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | json }}{% else %}null{% endif %},
+      "sku": {{ variant.sku | json }}
+    }{% unless forloop.last %},{% endunless %}
+  {%- endfor -%}
+]
+</script>
+
+<script>
+  (function () {
+    var dataEl = document.getElementById('commerce-variant-data');
+    var select = document.getElementById('commerce-variant-select');
+    if (!dataEl || !select || select.tagName !== 'SELECT') return;
+
+    var variants;
+    try { variants = JSON.parse(dataEl.textContent); } catch (err) { return; }
+    if (!variants || !variants.length) return;
+
+    var priceEl = document.getElementById('commerce-price');
+    var compareEl = document.getElementById('commerce-compare');
+    var saleEl = document.getElementById('commerce-sale');
+    var skuEl = document.getElementById('commerce-sku');
+    var availabilityEl = document.getElementById('commerce-availability');
+    var button = document.getElementById('commerce-add');
+    var label = button ? button.querySelector('[data-add-label]') : null;
+
+    select.addEventListener('change', function () {
+      var match = null;
+      for (var i = 0; i < variants.length; i++) {
+        if (String(variants[i].id) === String(select.value)) { match = variants[i]; break; }
+      }
+      if (!match) return;
+
+      if (priceEl) priceEl.textContent = match.price;
+      if (compareEl) {
+        compareEl.textContent = match.compare_at_price || '';
+        compareEl.hidden = !match.compare_at_price;
+      }
+      if (saleEl) saleEl.hidden = !match.compare_at_price;
+      if (skuEl) skuEl.textContent = match.sku ? 'SKU ' + match.sku : '';
+      if (button) button.disabled = !match.available;
+      if (label) label.textContent = match.available ? 'Add to cart' : 'Sold out';
+      if (availabilityEl) {
+        availabilityEl.innerHTML = match.available
+          ? '<span class="status-badge status-badge--success">In stock</span>'
+          : '<span class="status-badge status-badge--error">Sold out</span>';
+      }
+
+      if (window.history && window.history.replaceState) {
+        try {
+          var url = new URL(window.location.href);
+          url.searchParams.set('variant', match.id);
+          window.history.replaceState({}, '', url.toString());
+        } catch (err) { /* older browsers keep the current URL, the form still posts the right id */ }
+      }
+    });
+  })();
+
+  (function () {
+    var thumbs = document.querySelectorAll('[data-commerce-thumb]');
+    var main = document.querySelector('.commerce-main-img');
+    if (!thumbs.length || !main) return;
+
+    for (var i = 0; i < thumbs.length; i++) {
+      thumbs[i].addEventListener('click', function () {
+        var full = this.getAttribute('data-full');
+        if (!full) return;
+        main.removeAttribute('srcset');
+        main.removeAttribute('sizes');
+        main.setAttribute('src', full);
+        main.setAttribute('alt', this.getAttribute('data-alt') || '');
+        for (var j = 0; j < thumbs.length; j++) { thumbs[j].removeAttribute('aria-current'); }
+        this.setAttribute('aria-current', 'true');
+      });
+    }
+  })();
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "url": {{ shop.url | append: product.url | json }},
+  "description": {{ product.description | strip_html | truncate: 400 | json }},
+  "sku": {{ current_variant.sku | json }},
+  "brand": {
+    "@type": "Brand",
+    "name": {{ product.vendor | default: shop.name | json }}
+  },
+  {% if featured_image %}"image": [{{ featured_image | image_url: width: 1200 | json }}],{% endif %}
+  "offers": [
+    {%- for variant in product.variants -%}
+      {%- capture variant_url -%}{{ shop.url }}{{ product.url }}?variant={{ variant.id }}{%- endcapture -%}
+      {
+        "@type": "Offer",
+        "name": {{ variant.title | json }},
+        "sku": {{ variant.sku | json }},
+        "url": {{ variant_url | json }},
+        "price": {{ variant.price | divided_by: 100.0 }},
+        "priceCurrency": {{ shop.currency | json }},
+        "availability": "https://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}"
+      }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+}
+</script>

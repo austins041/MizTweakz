@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1114 260" width="1114" height="260" role="img" aria-label="">
+  <title>Affiliate program banner art</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2a2f"/><stop offset="1" stop-color="#15151a"/></linearGradient>
+    <radialGradient id="glow-lime" cx=".86" cy=".5" r=".55"><stop offset="0" stop-color="#bc312a" stop-opacity=".32"/><stop offset="1" stop-color="#bc312a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="glow-cyan" cx=".08" cy=".05" r=".55"><stop offset="0" stop-color="#e85a51" stop-opacity=".22"/><stop offset="1" stop-color="#e85a51" stop-opacity="0"/></radialGradient>
+    <linearGradient id="trend" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e85a51"/><stop offset="1" stop-color="#bc312a"/></linearGradient>
+    <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse"><path d="M42 0H0V42" fill="none" stroke="#fff" stroke-opacity=".05"/></pattern>
+  </defs>
+  <rect width="1114" height="260" fill="url(#bg)"/>
+  <rect width="1114" height="260" fill="url(#grid)"/>
+  <rect width="1114" height="260" fill="url(#glow-lime)"/>
+  <rect width="1114" height="260" fill="url(#glow-cyan)"/>
+  <g fill="none" stroke="#fff" stroke-opacity=".07" stroke-width="2">
+    <circle cx="960" cy="140" r="150"/><circle cx="960" cy="140" r="215"/><circle cx="960" cy="140" r="285"/>
+  </g>
+  <path d="M0 260L260 0M70 260L330 0M140 260L400 0" stroke="#fff" stroke-opacity=".05" stroke-width="2"/>
+  <g fill-opacity=".9">
+    <rect x="770" y="176" width="26" height="60" rx="4" fill="#bc312a"/>
+    <rect x="814" y="150" width="26" height="86" rx="4" fill="#bc312a"/>
+    <rect x="858" y="118" width="26" height="118" rx="4" fill="#e85a51"/>
+    <rect x="902" y="84" width="26" height="152" rx="4" fill="#bc312a"/>
+    <rect x="946" y="46" width="26" height="190" rx="4" fill="#f8f8f6"/>
+  </g>
+  <polyline points="783,154 827,128 871,96 915,62 959,26" fill="none" stroke="url(#trend)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="959" cy="26" r="7" fill="#bc312a"/>
+  <circle cx="959" cy="26" r="14" fill="#bc312a" fill-opacity=".25"/>
+  <g fill="#f8f8f6" fill-opacity=".85">
+    <circle cx="120" cy="190" r="6"/><circle cx="150" cy="190" r="6"/><circle cx="180" cy="190" r="6"/>
+  </g>
+  <rect x="120" y="56" width="4" height="70" rx="2" fill="#bc312a"/>
+  <rect x="136" y="56" width="4" height="70" rx="2" fill="#bc312a" fill-opacity=".45"/>
+  <rect x="152" y="56" width="4" height="70" rx="2" fill="#bc312a" fill-opacity=".2"/>
+</svg>

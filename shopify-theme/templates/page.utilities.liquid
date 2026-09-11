@@ -1,0 +1,500 @@
+{% comment %}
+  Utilities page. Ported from the static site/utilities/index.html: banner, the
+  app screenshot coverflow, the feature grid, the plans, the download card and
+  the FAQ.
+
+  Two changes against the static source:
+    1. the Basic and Ultimate buy buttons link to the real Shopify products
+       (all_products['basic'] / all_products['ultimate']) instead of an
+       external store URL, falling back to the /products/ path for that handle;
+    2. their prices render from Shopify when the product is there, falling back
+       to the static figures.
+{% endcomment %}
+
+{{ 'page-utilities.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  /* page-utilities.css scopes these to .utilities-page; the layout owns the main.page wrapper, so they are set here */
+  #main-content {
+    --gold: #fbbf24;        /* Paragon Apex tier */
+    --gold-rgb: 251, 191, 36;
+    --teal: #10b981;        /* Paragon .discount-badge / sale colour */
+    --teal-rgb: 16, 185, 129;
+    --plan-green: #22c55e;  /* "Your Plan" pill (owner screenshot) */
+    --blue: #3b82f6;        /* Paragon "Downloads" tag */
+  }
+{% endstyle %}
+
+{%- assign basic_product = all_products['basic'] -%}
+{%- assign ultimate_product = all_products['ultimate'] -%}
+
+{%- assign basic_url = '/products/basic' -%}
+{%- assign basic_price = '$7.99' -%}
+{%- assign basic_monthly = '799' -%}
+{%- if basic_product != empty -%}
+  {%- assign basic_url = basic_product.url -%}
+  {%- if basic_product.price > 0 -%}
+    {%- assign basic_price = basic_product.price | money -%}
+    {%- assign basic_monthly = basic_product.price -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- assign ultimate_url = '/products/ultimate' -%}
+{%- assign ultimate_price = '$14.99' -%}
+{%- assign ultimate_monthly = '1499' -%}
+{%- if ultimate_product != empty -%}
+  {%- assign ultimate_url = ultimate_product.url -%}
+  {%- if ultimate_product.price > 0 -%}
+    {%- assign ultimate_price = ultimate_product.price | money -%}
+    {%- assign ultimate_monthly = ultimate_product.price -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- assign tos_url = '/pages/terms-of-service' -%}
+{%- if shop.terms_of_service.url != blank -%}
+  {%- assign tos_url = shop.terms_of_service.url -%}
+{%- endif -%}
+
+  <!-- 1. BANNER (Paragon LargeBanner: tag, title, subtitle, CTA; ours adds the app icon and the fact pills) -->
+  <section class="banner utilities-banner" data-mount aria-labelledby="utilities-title">
+    <div class="banner-content">
+      <img class="banner-app-icon" src="{{ 'brand-app-icon-160.webp' | asset_url }}" width="160" height="160" alt="MizTweakz app icon" fetchpriority="high">
+      <h1 class="banner-title" id="utilities-title">MizTweakz Utility</h1>
+      <p class="banner-subtitle">A Windows desktop app that optimizes your PC for gaming. Sign in and toggle a catalogue of 525 Windows tweaks (registry, services, scheduled tasks, Store-app removal and power settings), plus a process viewer, app debloat, a per-app optimizer, FPS Boost, restore points, a startup manager, storage cleanup, network tools, a crosshair overlay and an NVIDIA driver profile for Fortnite.</p>
+      <div class="banner-pills">
+        <span class="title-tag">Windows 10 &amp; 11</span>
+        <span class="title-tag" style="--color:#22c55e">Free tier</span>
+        <span class="title-tag" style="--color:#3b82f6">Auto-updates</span>
+      </div>
+      <div class="banner-actions">
+        <div class="nice-button-box"><a class="nice-button btn-lg" href="https://github.com/austins041/MizTweakz/releases/latest/download/MizTweakz-Setup.exe" data-download><i data-icon="download"></i><span>Download for <span class="free-word">Free</span></span></a></div>
+        <a class="nice-button grey btn-lg" href="#utility-plans">See Plans</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. THE APP (Paragon "Experience PTU" showcase: tag, title, subtitle, screenshot coverflow) -->
+  <section class="section section-with-bar bar-section showcase-section animate" id="app" aria-labelledby="showcase-title">
+    <span class="title-tag bar-eyebrow" aria-hidden="true">The App</span>
+    <h2 class="showcase-title" id="showcase-title">Every Tool In One Window</h2>
+    <p class="showcase-subtitle">Five screens from the real MizTweakz build. Use the arrows, the dashes or your keyboard to step through them.</p>
+
+    <div class="coverflow" data-coverflow aria-roledescription="carousel" aria-label="MizTweakz app screenshots">
+      <button type="button" class="coverflow-btn coverflow-btn--prev" aria-label="Previous screenshot"><i data-icon="arrow-right"></i></button>
+      <div class="coverflow-stage">
+        <ul class="coverflow-track">
+          <li class="coverflow-slide is-active" role="group" aria-roledescription="slide" aria-label="Home, 1 of 5">
+            <figure>
+              <img src="{{ 'app-home.webp' | asset_url }}" srcset="{{ 'app-home-640.webp' | asset_url }} 640w, {{ 'app-home.webp' | asset_url }} 1280w" sizes="(max-width: 850px) 100vw, 760px" width="1280" height="800" alt="MizTweakz Home screen with the optimization score ring, Run scan button and the Applied now, Available on your plan and Locked cards" fetchpriority="high">
+              <figcaption><strong>Home.</strong> An optimization score out of 500 with a verdict, Run scan to detect what is already applied, and Applied now, Available on your plan and Locked cards with a progress bar per category.</figcaption>
+            </figure>
+          </li>
+          <li class="coverflow-slide" role="group" aria-roledescription="slide" aria-label="FPS Boost, 2 of 5">
+            <figure>
+              <img src="{{ 'app-fps-boost.webp' | asset_url }}" srcset="{{ 'app-fps-boost-640.webp' | asset_url }} 640w, {{ 'app-fps-boost.webp' | asset_url }} 1280w" sizes="(max-width: 850px) 100vw, 760px" width="1280" height="800" alt="MizTweakz FPS Boost screen with Free for games, Held as cache, In use and Freed this session figures over a live memory graph" loading="lazy">
+              <figcaption><strong>FPS Boost</strong> (Ultimate). Trims the standby list every 60 seconds and charts Free for games, Held as cache, In use and Freed this session. It frees memory, it does not create it, and nothing is closed or suspended.</figcaption>
+            </figure>
+          </li>
+          <li class="coverflow-slide" role="group" aria-roledescription="slide" aria-label="Crosshair, 3 of 5">
+            <figure>
+              <img src="{{ 'app-crosshair.webp' | asset_url }}" srcset="{{ 'app-crosshair-640.webp' | asset_url }} 640w, {{ 'app-crosshair.webp' | asset_url }} 1280w" sizes="(max-width: 850px) 100vw, 760px" width="1280" height="800" alt="MizTweakz Crosshair screen with the live preview canvas, shape and preset pickers and the sliders" loading="lazy">
+              <figcaption><strong>Crosshair.</strong> A live preview, 8 shapes, 8 presets (2 free), sliders for arm length, gap, thickness, dot size, outline, opacity and offset, and up to 12 saved crosshairs. Works in borderless and windowed modes.</figcaption>
+            </figure>
+          </li>
+          <li class="coverflow-slide" role="group" aria-roledescription="slide" aria-label="Potato Graphics, 4 of 5">
+            <figure>
+              <img src="{{ 'app-potato-graphics.webp' | asset_url }}" srcset="{{ 'app-potato-graphics-640.webp' | asset_url }} 640w, {{ 'app-potato-graphics.webp' | asset_url }} 1280w" sizes="(max-width: 850px) 100vw, 760px" width="1280" height="800" alt="MizTweakz Potato Graphics screen with the GPU check card and the Fortnite card with Apply potato graphics and Revert to stock" loading="lazy">
+              <figcaption><strong>Potato Graphics</strong> (Ultimate, NVIDIA only). A Fortnite driver profile for texture filtering and transparency supersampling, applied with one click and reverted to NVIDIA stock just as fast.</figcaption>
+            </figure>
+          </li>
+          <li class="coverflow-slide" role="group" aria-roledescription="slide" aria-label="Gaming category, 5 of 5">
+            <figure>
+              <img src="{{ 'app-gaming-tweaks.webp' | asset_url }}" srcset="{{ 'app-gaming-tweaks-640.webp' | asset_url }} 640w, {{ 'app-gaming-tweaks.webp' | asset_url }} 1280w" sizes="(max-width: 850px) 100vw, 760px" width="1280" height="800" alt="MizTweakz Gaming category with its list of tweak toggles, High impact and Caution pills and the Restore point and Apply all buttons" loading="lazy">
+              <figcaption><strong>Gaming category.</strong> One of 13 categories: 33 tweaks with High impact and Caution pills, a Restore point button and Apply all in the header. Locked rows show the plan that unlocks them.</figcaption>
+            </figure>
+          </li>
+        </ul>
+      </div>
+      <button type="button" class="coverflow-btn coverflow-btn--next" aria-label="Next screenshot"><i data-icon="arrow-right"></i></button>
+      <div class="coverflow-footer">
+        <div class="coverflow-dots" role="group" aria-label="Choose a screenshot"></div>
+        <span class="coverflow-counter" aria-hidden="true"><strong>01</strong> / 5</span>
+      </div>
+      <p class="coverflow-caption" aria-live="polite"></p>
+    </div>
+
+    <!-- feature grid: only facts from docs/app-study.md -->
+    <div class="app-feature-grid">
+      <div class="glass-info-card glass-card"><span class="info-accent"></span><h4><i data-icon="gauge"></i>525 tweaks, 13 categories</h4><p>Registry, services, scheduled tasks, Store-app removal and power commands, from Gaming and Input to Network &amp; Ping. Free unlocks 10, Basic 263, Ultimate all 525.</p></div>
+      <div class="glass-info-card glass-card"><span class="info-accent"></span><h4><i data-icon="undo"></i>One-click apply and revert</h4><p>Apply a whole category in one click and revert tweak by tweak. Make a restore point from any category header or the Restore points tool before you start.</p></div>
+      <div class="glass-info-card glass-card"><span class="info-accent"></span><h4><i data-icon="plus"></i>Crosshair designer</h4><p>8 shapes and 8 presets (2 on the free tier), colour and outline pickers, and up to 12 saved crosshairs as a click-through, always-on-top overlay.</p></div>
+      <div class="glass-info-card glass-card"><span class="info-accent"></span><h4><i data-icon="bolt"></i>App Optimizer</h4><p>8 apps and 15 switches: hardware acceleration, background running and startup entries for Discord, Chrome, Edge, Firefox, Steam, Epic Games, Spotify and the NVIDIA overlay.</p></div>
+      <div class="glass-info-card glass-card"><span class="info-accent"></span><h4><i data-icon="broom"></i>Storage cleanup</h4><p>6 targets, measured before anything is deleted. Only what you tick is removed, and your documents, downloads and recycle bin are never touched.</p></div>
+      <div class="glass-info-card glass-card"><span class="info-accent"></span><h4><i data-icon="signal"></i>DNS benchmark</h4><p>Pings 5 resolvers, Cloudflare, Google, Quad9, OpenDNS and AdGuard, so you can pick the fastest, then flush DNS, renew your IP or reset Winsock and TCP/IP.</p></div>
+      <div class="glass-info-card glass-card" style="--color:#fbbf24"><span class="info-accent"></span><h4><i data-icon="stopwatch"></i>FPS Boost<span class="tier-pill">Ultimate</span></h4><p>Trims the standby list every 60 seconds and shows what it freed this session. It frees memory, it does not create it, and nothing is closed or suspended.</p></div>
+      <div class="glass-info-card glass-card" style="--color:#fbbf24"><span class="info-accent"></span><h4><i data-icon="crown"></i>Potato Graphics<span class="tier-pill">Ultimate</span></h4><p>A Fortnite NVIDIA driver profile for texture filtering and transparency supersampling. NVIDIA GPUs only; one click to apply, one click back to stock.</p></div>
+      <div class="glass-info-card glass-card"><span class="info-accent"></span><h4><i data-icon="lock"></i>Account required, free tier offline</h4><p>Sign in with an email and password. The free tier works offline; paid tweak definitions arrive from the server after sign-in and are never stored on disk.</p></div>
+    </div>
+  </section>
+
+  <!-- 3. UTILITY PLANS (Paragon #utility-plans: tag, heading, billing selector, subscriber counter, plan cards) -->
+  <section class="section section-with-bar bar-section plans-section animate" id="utility-plans" aria-labelledby="plans-title">
+    <span class="title-tag bar-eyebrow" aria-hidden="true" style="--color:#b418e7">The Utility</span>
+    <div class="plans-head">
+      <div class="plans-head-left">
+        <h2 id="plans-title">Utility Plans</h2>
+      </div>
+      <div class="subscriber-count glass-card" role="group" aria-label="4,000+ active users">
+        <strong class="led-count" data-count="4000" data-suffix="+">4,000+</strong>
+        <span>Active Users</span>
+      </div>
+    </div>
+    <p class="plans-subtitle">Every plan is monthly and cancels any time. Tweaks you have already applied stay applied if you stop.</p>
+
+    <div class="plans-grid">
+
+      <!-- FREE (Paragon "Core" slot) -->
+      <div class="plan-card-wrapper" id="plan-free">
+        <span class="plan-tag plan-tag--green">Your Plan</span>
+        <article class="plan-card glass-card" aria-labelledby="plan-free-name">
+          <div class="top-card-container">
+            <div class="top-card plan-top">
+              <h3 class="top-card-text" id="plan-free-name">Free</h3>
+            </div>
+          </div>
+          <div class="content-wrapper">
+            <div class="price-row">
+              <span class="price">$0</span>
+              <span class="price-currency">/month</span>
+            </div>
+            <p class="description">Enough to feel the difference before you pay for anything.</p>
+            <div class="nice-button-box book-now-box"><a class="nice-button btn-md" href="https://github.com/austins041/MizTweakz/releases/latest/download/MizTweakz-Setup.exe" data-download><span>Download for <span class="free-word">Free</span></span></a></div>
+            <div class="plan-features">
+              <span class="feature-header">Features</span>
+              <ul class="features">
+                <li><i data-icon="check"></i><span>10 tweaks</span></li>
+                <li><i data-icon="check"></i><span>8 categories</span></li>
+                <li><i data-icon="check"></i><span>Processes and App Debloat</span></li>
+                <li><i data-icon="check"></i><span>Restore points and storage cleanup</span></li>
+                <li><i data-icon="check"></i><span>Crosshair designer, 2 presets</span></li>
+                <li class="is-excluded"><i data-icon="times"></i><span><span class="sr-only">Not included: </span>FPS Boost</span></li>
+                <li class="is-excluded"><i data-icon="times"></i><span><span class="sr-only">Not included: </span>Network and ping tweaks</span></li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- ULTIMATE (Paragon "Apex" slot: gold outer-glow shell + "Most Popular" tab) -->
+      <div class="plan-shell outer-glow-container" id="plan-ultimate">
+        <span class="plan-tag">Most Popular</span>
+        <article class="plan-card glass-card" aria-labelledby="plan-ultimate-name" data-monthly="{{ ultimate_monthly }}">
+          <div class="top-card-container">
+            <div class="top-card plan-top">
+              <h3 class="top-card-text" id="plan-ultimate-name">Ultimate</h3>
+            </div>
+          </div>
+          <div class="content-wrapper">
+            <div class="price-row">
+              <span class="original-price" data-original hidden>{{ ultimate_price }}</span>
+              <span class="price" data-price>{{ ultimate_price }}</span>
+              <span class="price-currency">/month</span>
+              <span class="sale-badge" data-sale hidden>Sale</span>
+            </div>
+            <p class="billing-note" data-billing-note>Billed monthly, cancel any time.</p>
+            <p class="description">Everything, including the full network and latency set.</p>
+            <div class="nice-button-box book-now-box"><a class="nice-button btn-md" href="{{ ultimate_url }}">Get Ultimate <i data-icon="arrow-right"></i></a></div>
+            <div class="plan-features">
+              <span class="feature-header">Features</span>
+              <ul class="features">
+                <li><i data-icon="check"></i><span>All 525 tweaks</span></li>
+                <li><i data-icon="check"></i><span>Everything in Basic</span></li>
+                <li><i data-icon="check"></i><span>FPS Boost and Potato Graphics</span></li>
+                <li><i data-icon="check"></i><span>Network and ping tweaks (43)</span></li>
+                <li><i data-icon="check"></i><span>Full services and scheduled task control</span></li>
+                <li><i data-icon="check"></i><span>Every visual and system tweak</span></li>
+                <li><i data-icon="check"></i><span>Priority on new tweaks</span></li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- BASIC (Paragon "Edge" slot) -->
+      <div class="plan-card-wrapper" id="plan-basic">
+        <article class="plan-card glass-card" aria-labelledby="plan-basic-name" data-monthly="{{ basic_monthly }}">
+          <div class="top-card-container">
+            <div class="top-card plan-top">
+              <h3 class="top-card-text" id="plan-basic-name">Basic</h3>
+            </div>
+          </div>
+          <div class="content-wrapper">
+            <div class="price-row">
+              <span class="original-price" data-original hidden>{{ basic_price }}</span>
+              <span class="price" data-price>{{ basic_price }}</span>
+              <span class="price-currency">/month</span>
+              <span class="sale-badge" data-sale hidden>Sale</span>
+            </div>
+            <p class="billing-note" data-billing-note>Billed monthly, cancel any time.</p>
+            <p class="description">The tweaks that move frames and cut input delay.</p>
+            <div class="nice-button-box book-now-box"><a class="nice-button btn-md" href="{{ basic_url }}">Get Basic <i data-icon="arrow-right"></i></a></div>
+            <div class="plan-features">
+              <span class="feature-header">Features</span>
+              <ul class="features">
+                <li><i data-icon="check"></i><span>263 tweaks</span></li>
+                <li><i data-icon="check"></i><span>Everything in Free</span></li>
+                <li><i data-icon="check"></i><span>Gaming, input, privacy and debloat</span></li>
+                <li><i data-icon="check"></i><span>Crosshair designer, all presets and saving</span></li>
+                <li class="is-excluded"><i data-icon="times"></i><span><span class="sr-only">Not included: </span>FPS Boost</span></li>
+                <li class="is-excluded"><i data-icon="times"></i><span><span class="sr-only">Not included: </span>Network and ping tweaks (43)</span></li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 4. UTILITY DOWNLOAD (Paragon #utility-downloads: tag, heading, DownloadCard with icon, version, size) -->
+  <section class="section section-with-bar bar-section downloads-section animate" id="utility-downloads" aria-labelledby="downloads-title">
+    <span class="title-tag bar-eyebrow" aria-hidden="true" style="--color:#3b82f6">Downloads</span>
+    <h2 id="downloads-title">Utility Download</h2>
+
+    <article class="download-card glass-card" aria-labelledby="download-title">
+      <div class="download-main">
+        <img class="download-icon" src="{{ 'brand-app-icon-160.webp' | asset_url }}" width="160" height="160" alt="" loading="lazy">
+        <div class="download-info">
+          <div class="download-title-row">
+            <h3 id="download-title">MizTweakz for Windows</h3>
+          </div>
+          <p class="description">The app with every tool on this page. Install it, sign in or create a free account, and the free tweaks are ready to apply. Basic and Ultimate unlock the rest inside the same app.</p>
+          <div class="download-actions">
+            <div class="nice-button-box"><a class="nice-button btn-md" href="https://github.com/austins041/MizTweakz/releases/latest/download/MizTweakz-Setup.exe" data-download><i data-icon="download"></i><span>Download for <span class="free-word">Free</span></span></a></div>
+          </div>
+          <p class="download-meta">
+            <span>MizTweakz-Setup.exe</span>
+            <span class="meta-dot" aria-hidden="true"></span>
+            <span>76.3 MB</span>
+          </p>
+          <p class="download-note"><i data-icon="infinity"></i><span>The app updates itself. It checks for a new build shortly after launch and every 6 hours, downloads it in the background and installs it when you restart.</span></p>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- 5. FAQ (shared accordion; the first three are verbatim from MZ.faqs, the last two come from docs/app-study.md) -->
+  <section class="faq-section reveal section" id="faq" aria-labelledby="faq-title">
+    <div class="section-header">
+      <span class="section-label">Support</span>
+      <h2 class="faq-title" id="faq-title">Utility Questions</h2>
+      <p class="faq-subtitle">Refunds, compatibility, safety, admin rights and updates</p>
+    </div>
+    <div class="faq-list" data-accordion>
+      <div class="faq-item"><h3><button type="button" class="faq-question" aria-expanded="false">Does it work on all systems?<span class="faq-icon" aria-hidden="true"><i data-icon="plus"></i></span></button></h3><div class="faq-answer"><div class="faq-answer-inner">It's optimized for Windows 10 &amp; 11, and works on laptops, desktops! However, depending on the level of your setup, results may vary.</div></div></div>
+      <div class="faq-item"><h3><button type="button" class="faq-question" aria-expanded="false">Is this safe for my setup?<span class="faq-icon" aria-hidden="true"><i data-icon="plus"></i></span></button></h3><div class="faq-answer"><div class="faq-answer-inner">Yes, 100%. Everything is tested, non-intrusive, and fully reversible. No sketchy third-party tools. Just elite system tweaks used by Mizery himself, and some pros!</div></div></div>
+      <div class="faq-item"><h3><button type="button" class="faq-question" aria-expanded="false">Does it need admin rights?<span class="faq-icon" aria-hidden="true"><i data-icon="plus"></i></span></button></h3><div class="faq-answer"><div class="faq-answer-inner">Yes. The installer asks for administrator rights, and so does the app each time it launches. Most tweaks write to the registry, services and scheduled tasks, and FPS Boost's standby-list trim needs the same permission. The app uses the tools built into Windows (reg, sc, schtasks, netsh and powercfg) and reads the previous value before it changes anything.</div></div></div>
+      <div class="faq-item"><h3><button type="button" class="faq-question" aria-expanded="false">Will it update itself?<span class="faq-icon" aria-hidden="true"><i data-icon="plus"></i></span></button></h3><div class="faq-answer"><div class="faq-answer-inner">Yes. The app checks for a new version shortly after launch and every 6 hours after that, downloads it in the background and shows a banner when it is ready. Nothing installs until you click Restart now or quit the app, and if you are offline the check is skipped quietly. You can also grab any build by hand from the <a href="https://github.com/austins041/MizTweakz/releases" target="_blank" rel="noopener noreferrer">releases page</a>.</div></div></div>
+      <div class="faq-item"><h3><button type="button" class="faq-question" aria-expanded="false">What is your refund policy?<span class="faq-icon" aria-hidden="true"><i data-icon="plus"></i></span></button></h3><div class="faq-answer"><div class="faq-answer-inner">Because the product is instantly delivered to your device, we offer no refunds. See the <a href="{{ tos_url }}">Terms of Service</a> for details.</div></div></div>
+    </div>
+    <div class="faq-cta">
+      <p class="cta-text">Still have questions?</p>
+      <a class="cta-link" href="https://discord.gg/tT4HSfAWrt" target="_blank" rel="noopener noreferrer">Join our Discord <i data-icon="arrow-right"></i></a>
+    </div>
+  </section>
+
+{% raw %}
+<script>
+/* Utilities page: screenshot coverflow, billing toggle (Monthly / 6 Months 17% off / Annual 25% off),
+   LED active-users counter, checksum copy button, download buttons synced from MZ.download.
+   Runs after the deferred data.js + site.js. */
+(function () {
+  'use strict';
+  var PERIODS = {
+    monthly: { months: 1, off: 0, status: 'Monthly pricing.' },
+    six: { months: 6, off: .17, suffix: ' every 6 months', status: '6 month pricing, 17% off, billed every 6 months.' },
+    annual: { months: 12, off: .25, suffix: ' per year', status: 'Annual pricing, 25% off, billed once per year.' }
+  };
+  function money(cents) { return '$' + (cents / 100).toFixed(2); }
+  /* billed = monthly x months x (1 - discount), rounded to the cent; the shown per-month figure is billed / months */
+  function quote(monthlyCents, p) {
+    var billed = Math.round(monthlyCents * p.months * (1 - p.off));
+    return { billed: billed, perMonth: Math.round(billed / p.months) };
+  }
+
+  function ready() {
+    var MZ = window.MZ || {}, ui = MZ.ui;
+    var $ = function (sel, root) { return (root || document).querySelector(sel); };
+    var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* download buttons follow MZ.download (label goes into the inner span so icons survive) */
+    if (MZ.download && MZ.download.href) $$('[data-download]').forEach(function (a) {
+      a.setAttribute('href', MZ.download.href);
+      a.removeAttribute('download'); /* cross-origin: the attribute is ignored by browsers anyway */
+      var label = $('span', a);
+      if (MZ.download.label) (label || a).textContent = MZ.download.label;
+    });
+
+    /* ---- coverflow: one active slide, neighbours rotated back, everything else hidden ---- */
+    var cf = $('[data-coverflow]');
+    if (cf) {
+      var slides = $$('.coverflow-slide', cf), n = slides.length, current = 0;
+      var dotsWrap = $('.coverflow-dots', cf), caption = $('.coverflow-caption', cf), counter = $('.coverflow-counter strong', cf);
+      var dots = slides.map(function (s, i) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'coverflow-dot';
+        b.setAttribute('aria-label', 'Screenshot ' + (i + 1) + ' of ' + n);
+        b.addEventListener('click', function () { go(i); });
+        if (dotsWrap) dotsWrap.appendChild(b);
+        return b;
+      });
+      var pad = function (i) { return (i < 10 ? '0' : '') + i; };
+      var go = function (i) {
+        current = ((i % n) + n) % n;
+        slides.forEach(function (s, k) {
+          var d = k - current;                       /* signed distance, wrapping round the ends */
+          if (d > n / 2) d -= n; else if (d < -n / 2) d += n;
+          s.className = 'coverflow-slide' + (d === 0 ? ' is-active' : d === -1 ? ' is-prev' : d === 1 ? ' is-next' : d === -2 ? ' is-prev2' : d === 2 ? ' is-next2' : '');
+          s.setAttribute('aria-hidden', d === 0 ? 'false' : 'true');
+        });
+        dots.forEach(function (b, k) { if (k === current) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current'); });
+        var fig = $('figcaption', slides[current]);
+        if (caption && fig) caption.innerHTML = fig.innerHTML;
+        if (counter) counter.textContent = pad(current + 1);
+      };
+      var prev = $('.coverflow-btn--prev', cf), next = $('.coverflow-btn--next', cf);
+      if (prev) prev.addEventListener('click', function () { go(current - 1); });
+      if (next) next.addEventListener('click', function () { go(current + 1); });
+      /* autoplay: advances slowly and continuously (owner request 2026-09-09); pauses while the tab is hidden; off under reduced motion */
+      if (!reduce) {
+        var tick = function () { if (!document.hidden) go(current + 1); };
+        var timer = setInterval(tick, 3200);
+        cf.addEventListener('pointerdown', function () { clearInterval(timer); timer = setInterval(tick, 3200); });
+        cf.addEventListener('keydown', function () { clearInterval(timer); timer = setInterval(tick, 3200); });
+      }
+      /* a click on a side slide brings it to the front (pointer convenience; the dots are the accessible route) */
+      var swiped = false;
+      slides.forEach(function (s, k) {
+        s.addEventListener('click', function () { if (swiped) { swiped = false; return; } if (k !== current) go(k); });
+      });
+      cf.addEventListener('keydown', function (e) {
+        var to = e.key === 'ArrowLeft' ? current - 1 : e.key === 'ArrowRight' ? current + 1 : e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : null;
+        if (to === null) return;
+        e.preventDefault();
+        go(to);
+        var f = document.activeElement;
+        if (f && f.classList.contains('coverflow-dot')) dots[current].focus();
+      });
+      /* swipe / drag: 40px of horizontal travel moves one slide */
+      var x0 = null, stage = $('.coverflow-stage', cf);
+      if (stage) {
+        stage.addEventListener('pointerdown', function (e) { x0 = e.clientX; });
+        stage.addEventListener('pointerup', function (e) {
+          if (x0 === null) return;
+          var dx = e.clientX - x0; x0 = null;
+          if (Math.abs(dx) < 40) return;
+          swiped = true;
+          go(dx < 0 ? current + 1 : current - 1);
+        });
+        stage.addEventListener('pointercancel', function () { x0 = null; });
+      }
+      go(0);
+    }
+
+    /* ---- billing toggle ---- */
+    var tabs = $$('.billing-selector [data-billing]');
+    var cards = $$('.plan-card[data-monthly]');
+    var status = $('#billing-status');
+    function apply(key) {
+      var p = PERIODS[key];
+      if (!p) return;
+      tabs.forEach(function (t) {
+        var on = t.getAttribute('data-billing') === key;
+        t.classList.toggle('active', on);
+        t.setAttribute('aria-pressed', String(on));
+      });
+      cards.forEach(function (card) {
+        var monthly = parseInt(card.getAttribute('data-monthly'), 10);
+        var q = quote(monthly, p), isMonthly = key === 'monthly';
+        var price = $('[data-price]', card), orig = $('[data-original]', card), sale = $('[data-sale]', card), note = $('[data-billing-note]', card);
+        if (price) price.textContent = money(q.perMonth);
+        if (orig) { orig.textContent = money(monthly); orig.hidden = isMonthly; }
+        if (sale) sale.hidden = isMonthly;
+        if (note) note.textContent = isMonthly ? 'Billed monthly, cancel any time.' : 'Billed ' + money(q.billed) + p.suffix;
+      });
+      if (status) status.textContent = p.status;
+    }
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () { apply(tab.getAttribute('data-billing')); });
+      tab.addEventListener('keydown', function (e) {
+        var step = (e.key === 'ArrowRight' || e.key === 'ArrowDown') ? 1 : (e.key === 'ArrowLeft' || e.key === 'ArrowUp') ? -1 : 0;
+        var to = e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : step ? (i + step + tabs.length) % tabs.length : -1;
+        if (to < 0) return;
+        e.preventDefault();
+        tabs[to].focus();
+        apply(tabs[to].getAttribute('data-billing'));
+      });
+    });
+    if (tabs.length) apply('monthly');
+
+    /* ---- LED counter: counts up from 0 when it scrolls into view; reduced motion shows the final value at once ---- */
+    var counterEl = $('.led-count');
+    if (counterEl) {
+      var raw = String((MZ.brand && MZ.brand.activeUsers) || counterEl.getAttribute('data-count') || '');
+      var target = parseInt(raw.replace(/\D/g, ''), 10) || 0;
+      var suffix = /\+/.test(raw) ? '+' : (counterEl.getAttribute('data-suffix') || '');
+      var fmt = function (v) { return v.toLocaleString('en-US') + suffix; };
+      var run = function () {
+        if (reduce || !window.requestAnimationFrame) { counterEl.textContent = fmt(target); return; }
+        var start = null, duration = 1400;
+        var step = function (ts) {
+          if (start === null) start = ts;
+          var t = Math.min(1, (ts - start) / duration), eased = 1 - Math.pow(1 - t, 3);
+          counterEl.textContent = fmt(Math.round(target * eased));
+          if (t < 1) window.requestAnimationFrame(step);
+        };
+        window.requestAnimationFrame(step);
+      };
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          if (!entries.some(function (e) { return e.isIntersecting; })) return;
+          io.disconnect();
+          run();
+        }, { threshold: .3 });
+        io.observe(counterEl);
+      } else run();
+    }
+
+    /* ---- checksum copy button: clipboard API, falling back to selecting the hash ---- */
+    var copyBtn = $('[data-copy]');
+    if (copyBtn) {
+      var hash = $(copyBtn.getAttribute('data-copy')), label = $('span', copyBtn), live = $('#copy-status');
+      var original = label ? label.textContent : 'Copy', timer;
+      var selectHash = function () {
+        if (!hash || !window.getSelection) return;
+        var r = document.createRange(); r.selectNodeContents(hash);
+        var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      };
+      var report = function (ok) {
+        if (label) label.textContent = ok ? 'Copied' : 'Select and copy';
+        if (live) live.textContent = ok ? 'Checksum copied to the clipboard.' : 'Copy failed. The checksum is selected, press Ctrl+C to copy it.';
+        copyBtn.classList.toggle('is-done', ok);
+        clearTimeout(timer);
+        timer = setTimeout(function () { if (label) label.textContent = original; copyBtn.classList.remove('is-done'); }, 2200);
+      };
+      copyBtn.addEventListener('click', function () {
+        var text = hash ? hash.textContent.trim() : '';
+        if (text && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { report(true); }, function () { selectHash(); report(false); });
+        } else { selectHash(); report(false); }
+      });
+    }
+
+    if (ui && ui.hydrateIcons) ui.hydrateIcons(document);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready); else ready();
+})();
+</script>
+{% endraw %}

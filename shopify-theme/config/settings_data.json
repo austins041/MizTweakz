@@ -1,0 +1,30 @@
+{
+  "current": {
+    "accent_color": "#d92b21",
+    "accent_bright_color": "#ff5b50",
+    "download_url": "https://github.com/austins041/MizTweakz/releases/latest/download/MizTweakz-Setup.exe",
+    "discord_url": "https://discord.gg/tT4HSfAWrt",
+    "youtube_url": "https://www.youtube.com/@MIZTWEAKZ",
+    "tiktok_url": "https://www.tiktok.com/@miz_tweakz",
+    "instagram_url": "https://www.instagram.com/miz_tweakz",
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+          "logo_text": "MIZTWEAKZ",
+          "menu": "main-menu"
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {
+          "tagline": "PC tweaks and Windows optimization for competitive gamers.",
+          "menu": "footer",
+          "cta_title": "Ready to optimize?",
+          "cta_text": "Get your PC running at peak performance."
+        }
+      }
+    },
+    "results_video_url": ""
+  }
+}

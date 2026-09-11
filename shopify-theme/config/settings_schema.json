@@ -1,0 +1,77 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "MIZTWEAKZ",
+    "theme_version": "1.0.0",
+    "theme_author": "MIZTWEAKZ",
+    "theme_documentation_url": "https://github.com/austins041/MizTweakz",
+    "theme_support_url": "https://github.com/austins041/MizTweakz"
+  },
+  {
+    "name": "Brand",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo",
+        "info": "Used by the header and footer when those sections have no logo of their own. Leave empty to use the packaged brand logo assets."
+      },
+      {
+        "type": "color",
+        "id": "accent_color",
+        "label": "Accent colour",
+        "default": "#d92b21",
+        "info": "Drives --accent: filled buttons, active nav, icons, headline accent."
+      },
+      {
+        "type": "color",
+        "id": "accent_bright_color",
+        "label": "Bright accent colour",
+        "default": "#ff5b50",
+        "info": "Drives --accent-bright: focus rings, small stat numbers, promo links."
+      }
+    ]
+  },
+  {
+    "name": "Links",
+    "settings": [
+      {
+        "type": "text",
+        "id": "download_url",
+        "label": "Free download URL",
+        "default": "https://github.com/austins041/MizTweakz/releases/latest/download/MizTweakz-Setup.exe",
+        "info": "Every Download for Free button on the storefront points here."
+      },
+      {
+        "type": "text",
+        "id": "discord_url",
+        "label": "Discord invite",
+        "default": "https://discord.gg/tT4HSfAWrt"
+      },
+      {
+        "type": "text",
+        "id": "youtube_url",
+        "label": "YouTube",
+        "default": "https://www.youtube.com/@MIZTWEAKZ"
+      },
+      {
+        "type": "text",
+        "id": "tiktok_url",
+        "label": "TikTok",
+        "default": "https://www.tiktok.com/@miz_tweakz"
+      },
+      {
+        "type": "text",
+        "id": "instagram_url",
+        "label": "Instagram",
+        "default": "https://www.instagram.com/miz_tweakz"
+      },
+      {
+        "type": "url",
+        "id": "results_video_url",
+        "label": "Before and after video",
+        "info": "Upload the MP4 under Settings then Files in Shopify, copy its URL and paste it here. Shopify does not allow video files inside a theme, so this cannot be bundled. Leave empty to show the still image instead."
+      }
+    ]
+  }
+]

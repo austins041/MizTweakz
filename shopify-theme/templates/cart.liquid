@@ -1,0 +1,176 @@
+{% comment %}
+  Cart template. A plain Shopify cart form: quantity fields named updates[],
+  a note field, an update button and a checkout button. It works with no
+  JavaScript at all, which is the point. Every object is guarded before use.
+  Header and footer come from the layout.
+{% endcomment %}
+
+{% style %}
+  .commerce-cart { display: flex; flex-direction: column; gap: 1rem; }
+  .commerce-line { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.25rem; padding: 1rem 1.25rem; }
+  .commerce-line-media { width: 84px; flex: none; border-radius: 10px; overflow: hidden; background: rgba(0, 0, 0, .3); }
+  .commerce-line-media img, .commerce-line-media svg { width: 100%; height: auto; }
+  .commerce-line-info { flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .commerce-line-title { font-family: var(--font-display); font-size: 1.15rem; color: #fff; }
+  .commerce-line-title a:hover { color: var(--accent-bright); }
+  .commerce-line-sub { font-size: .85rem; color: var(--text-50); }
+  .commerce-line-qty { flex: 0 0 auto; display: flex; flex-direction: column; gap: 4px; }
+  .commerce-line-qty input { width: 92px; }
+  .commerce-line-price { flex: 0 0 auto; min-width: 110px; text-align: right; font-family: var(--font-display); font-size: 1.3rem; color: #fff; }
+  .commerce-line-remove { flex: 0 0 auto; font-size: .85rem; color: var(--text-50); min-height: 44px; display: inline-flex; align-items: center; }
+  .commerce-line-remove:hover { color: var(--accent-bright); }
+  .commerce-summary { display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem; margin-top: 1.5rem; }
+  .commerce-total-row { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; font-size: 1.1rem; }
+  .commerce-total-row strong { font-family: var(--font-display); font-size: 1.8rem; font-weight: 400; color: #fff; }
+  .commerce-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end; }
+  .commerce-empty { display: flex; flex-direction: column; align-items: center; gap: 1.25rem; text-align: center; padding: clamp(2rem, 6vw, 4rem) 1.5rem; }
+  .commerce-strike { text-decoration: line-through; color: var(--muted); font-size: 1rem; }
+  @media (max-width: 640px) {
+    .commerce-line-price { text-align: left; min-width: 0; }
+    .commerce-actions { justify-content: flex-start; }
+    .commerce-actions .nice-button-box { flex: 1 1 100%; }
+  }
+{% endstyle %}
+
+<section class="banner" data-mount aria-labelledby="commerce-cart-title">
+  <div class="banner-content">
+    <h1 class="banner-title" id="commerce-cart-title">Your cart</h1>
+    {%- if cart.item_count > 0 -%}
+      <p class="banner-subtitle">
+        {{ cart.item_count }} {% if cart.item_count == 1 %}item{% else %}items{% endif %} ready to check out.
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+<section class="section animate" aria-label="Cart contents">
+  <div class="container container--narrow">
+    {%- if cart.item_count > 0 -%}
+
+      {% form 'cart', cart %}
+        <div class="commerce-cart">
+          {%- for item in cart.items -%}
+            <div class="glass-card commerce-line">
+              <div class="commerce-line-media">
+                {%- if item.image -%}
+                  {%- assign line_alt = item.image.alt | default: item.title | escape -%}
+                  {{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: line_alt }}
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag: 'commerce-placeholder' }}
+                {%- endif -%}
+              </div>
+
+              <div class="commerce-line-info">
+                <span class="commerce-line-title">
+                  {%- if item.url != blank -%}
+                    <a href="{{ item.url }}">{{ item.product_title | escape }}</a>
+                  {%- else -%}
+                    {{ item.product_title | escape }}
+                  {%- endif -%}
+                </span>
+
+                {%- if item.variant.title != blank and item.variant.title != 'Default Title' -%}
+                  <span class="commerce-line-sub">{{ item.variant.title | escape }}</span>
+                {%- endif -%}
+
+                {%- if item.properties.size > 0 -%}
+                  {%- for property in item.properties -%}
+                    {%- assign property_first = property.first | slice: 0 -%}
+                    {%- if property.last != blank and property_first != '_' -%}
+                      <span class="commerce-line-sub">{{ property.first | escape }}: {{ property.last | escape }}</span>
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endif -%}
+
+                {%- if item.line_level_discount_allocations.size > 0 -%}
+                  {%- for allocation in item.line_level_discount_allocations -%}
+                    <span class="commerce-line-sub">{{ allocation.discount_application.title | escape }} ({{ allocation.amount | money }} off)</span>
+                  {%- endfor -%}
+                {%- endif -%}
+
+                <span class="commerce-line-sub">{{ item.final_price | money }} each</span>
+              </div>
+
+              <div class="commerce-line-qty">
+                <label class="form-label" for="commerce-qty-{{ item.key }}" style="margin-bottom: 0;">Qty</label>
+                <input class="form-input"
+                       type="number"
+                       id="commerce-qty-{{ item.key }}"
+                       name="updates[]"
+                       value="{{ item.quantity }}"
+                       min="0"
+                       step="1"
+                       inputmode="numeric"
+                       aria-label="Quantity for {{ item.product_title | escape }}">
+              </div>
+
+              <div class="commerce-line-price">
+                {%- if item.original_line_price > item.final_line_price -%}
+                  <span class="commerce-strike">{{ item.original_line_price | money }}</span><br>
+                {%- endif -%}
+                {{ item.final_line_price | money }}
+              </div>
+
+              <a class="commerce-line-remove"
+                 href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0"
+                 aria-label="Remove {{ item.product_title | escape }} from your cart">Remove</a>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        <div class="glass-card commerce-summary">
+          <div>
+            <label class="form-label" for="commerce-cart-note">Order note (optional)</label>
+            <textarea class="form-textarea" id="commerce-cart-note" name="note" rows="3" placeholder="Anything we should know about this order?">{{ cart.note | escape }}</textarea>
+          </div>
+
+          {%- if cart.cart_level_discount_applications.size > 0 -%}
+            {%- for discount_application in cart.cart_level_discount_applications -%}
+              <div class="commerce-total-row">
+                <span>{{ discount_application.title | escape }}</span>
+                <span>-{{ discount_application.total_allocated_amount | money }}</span>
+              </div>
+            {%- endfor -%}
+          {%- endif -%}
+
+          <div class="commerce-total-row">
+            <span>Total</span>
+            <span>
+              {%- if cart.original_total_price > cart.total_price -%}
+                <span class="commerce-strike">{{ cart.original_total_price | money }}</span>
+              {%- endif -%}
+              <strong>{{ cart.total_price | money }}</strong>
+            </span>
+          </div>
+
+          <p class="form-note"><i data-icon="info"></i><span>Taxes and any discount codes are calculated at checkout.</span></p>
+
+          <div class="commerce-actions">
+            <div class="nice-button-box">
+              <button type="submit" name="update" class="nice-button grey btn-sm">Update cart</button>
+            </div>
+            <div class="nice-button-box">
+              <button type="submit" name="checkout" class="nice-button btn-md">Check out</button>
+            </div>
+          </div>
+        </div>
+      {% endform %}
+
+      <p style="text-align: center; margin-top: 1.5rem;">
+        <a class="promo-link" href="{{ routes.all_products_collection_url }}">Keep shopping <i data-icon="arrow-right"></i></a>
+      </p>
+
+    {%- else -%}
+
+      <div class="glass-card glass-card--pad commerce-empty">
+        <i data-icon="tags" aria-hidden="true"></i>
+        <h2 class="section-subtitle">Your cart is empty</h2>
+        <p class="section-description">Nothing has been added yet. Take a look at what the store sells and come back.</p>
+        <div class="nice-button-box">
+          <a class="nice-button btn-md" href="{{ routes.all_products_collection_url }}">Shop all products</a>
+        </div>
+      </div>
+
+    {%- endif -%}
+  </div>
+</section>

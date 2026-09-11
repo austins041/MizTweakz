@@ -1,0 +1,76 @@
+{% comment %}
+  Product card, shared by the collection, list-collections and search templates.
+
+  Usage:
+    {% render 'commerce-product-card', product: product %}
+    {% render 'commerce-product-card', product: product, heading_tag: 'h2' %}
+
+  Everything on the card comes from the Shopify product object at render time.
+  The card styling reuses the pack-card family already in site.css, so no new
+  stylesheet is needed. The one-off rules the cards need live in a short
+  {% style %} block inside each template that renders this snippet.
+{% endcomment %}
+
+{%- if product != blank -%}
+  {%- assign card_heading = heading_tag | default: 'h3' -%}
+  {%- assign card_image = product.featured_image -%}
+  {%- assign card_title = product.title | escape -%}
+  {%- if card_image -%}
+    {%- assign card_alt = card_image.alt | default: product.title | escape -%}
+  {%- else -%}
+    {%- assign card_alt = card_title -%}
+  {%- endif -%}
+  {%- assign card_on_sale = false -%}
+  {%- if product.compare_at_price > product.price -%}
+    {%- assign card_on_sale = true -%}
+  {%- endif -%}
+
+  <div class="pack-card-wrapper commerce-card">
+    {%- unless product.available -%}
+      <span class="card-tag">Sold out</span>
+    {%- endunless -%}
+
+    <article class="pack-card glass-card glass-card--hover">
+      <a class="commerce-card-media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+        <div class="top-card-container">
+          <div class="top-card">
+            {%- if card_image -%}
+              {{ card_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: card_alt, widths: '300,450,600', sizes: '(max-width: 700px) 90vw, 380px' }}
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag: 'commerce-placeholder' }}
+            {%- endif -%}
+          </div>
+        </div>
+      </a>
+
+      <div class="content-wrapper">
+        <{{ card_heading }} class="feature-header commerce-card-title">
+          <a href="{{ product.url }}">{{ card_title }}</a>
+        </{{ card_heading }}>
+
+        <div class="price-row">
+          {%- if card_on_sale -%}
+            <span class="original-price">{{ product.compare_at_price | money }}</span>
+          {%- endif -%}
+          {%- if product.price_varies -%}
+            <span class="price-currency commerce-from">From</span>
+          {%- endif -%}
+          <span class="price">{{ product.price | money }}</span>
+          {%- if card_on_sale -%}
+            <span class="sale-badge">Sale</span>
+          {%- endif -%}
+        </div>
+
+        {%- if product.description != blank -%}
+          <p class="description">{{ product.description | strip_html | truncatewords: 22 }}</p>
+        {%- endif -%}
+
+        <div class="nice-button-box book-now-box">
+          <a class="nice-button btn-sm" href="{{ product.url }}">
+            <span>{% if product.available %}View details{% else %}Sold out{% endif %}</span>
+          </a>
+        </div>
+      </div>
+    </article>
+  </div>
+{%- endif -%}

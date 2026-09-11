@@ -1,0 +1,122 @@
+{% comment %}
+  Account overview: order history and the default address.
+  Header and footer come from the layout.
+{% endcomment %}
+
+{% style %}
+  .commerce-orders { width: 100%; border-collapse: collapse; }
+  .commerce-orders th, .commerce-orders td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--hairline-soft); vertical-align: top; }
+  .commerce-orders th { font-family: var(--font-display); font-weight: 400; color: var(--text-50); font-size: .85rem; text-transform: uppercase; letter-spacing: .08em; }
+  .commerce-orders td a { text-decoration: underline; }
+  .commerce-orders td a:hover { color: var(--accent-bright); }
+  .commerce-scroll { width: 100%; overflow-x: auto; }
+  .commerce-account-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+  @media (max-width: 860px) { .commerce-account-grid { grid-template-columns: minmax(0, 1fr); } }
+  .commerce-panel { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+  .commerce-panel h2 { font-family: var(--font-display); font-size: 1.3rem; color: #fff; }
+  .commerce-empty { display: flex; flex-direction: column; align-items: center; gap: 1.25rem; text-align: center; padding: 2rem 1.5rem; }
+  .commerce-pagination { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin-top: 1.5rem; }
+  .commerce-pagination a, .commerce-pagination span { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; padding: 0 12px; border-radius: var(--radius-sm); border: 1px solid var(--hairline); color: var(--text-70); }
+  .commerce-pagination a:hover { border-color: var(--accent); color: #fff; }
+  .commerce-pagination .is-current { border-color: var(--accent); color: #fff; }
+{% endstyle %}
+
+<section class="banner" data-mount aria-labelledby="commerce-account-title">
+  <div class="banner-content">
+    <h1 class="banner-title" id="commerce-account-title">Your account</h1>
+    {%- if customer.name != blank -%}
+      <p class="banner-subtitle">Signed in as {{ customer.name | escape }}</p>
+    {%- elsif customer.email != blank -%}
+      <p class="banner-subtitle">Signed in as {{ customer.email | escape }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+<section class="section animate" aria-label="Account">
+  <div class="container">
+    <div class="commerce-account-grid">
+
+      <div class="glass-card commerce-panel">
+        <h2>Order history</h2>
+
+        {% paginate customer.orders by 20 %}
+          {%- if customer.orders.size > 0 -%}
+            <div class="commerce-scroll">
+              <table class="commerce-orders">
+                <caption class="sr-only">Your orders</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Order</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Payment</th>
+                    <th scope="col">Fulfillment</th>
+                    <th scope="col">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {%- for order in customer.orders -%}
+                    <tr>
+                      <td><a href="{{ order.customer_url }}">{{ order.name }}</a></td>
+                      <td>{{ order.created_at | date: '%b %e, %Y' }}</td>
+                      <td><span class="status-badge{% if order.financial_status == 'paid' %} status-badge--success{% endif %}">{{ order.financial_status_label }}</span></td>
+                      <td><span class="status-badge{% if order.fulfillment_status == 'fulfilled' %} status-badge--success{% endif %}">{{ order.fulfillment_status_label }}</span></td>
+                      <td>{{ order.total_price | money }}</td>
+                    </tr>
+                  {%- endfor -%}
+                </tbody>
+              </table>
+            </div>
+
+            {%- if paginate.pages > 1 -%}
+              <nav class="commerce-pagination" role="navigation" aria-label="Pagination">
+                {%- if paginate.previous -%}
+                  <a href="{{ paginate.previous.url }}" rel="prev">Previous</a>
+                {%- endif -%}
+                {%- for part in paginate.parts -%}
+                  {%- if part.is_link -%}
+                    <a href="{{ part.url }}" aria-label="Page {{ part.title }}">{{ part.title }}</a>
+                  {%- elsif part.title == paginate.current_page -%}
+                    <span class="is-current" aria-current="page">{{ part.title }}</span>
+                  {%- else -%}
+                    <span>{{ part.title }}</span>
+                  {%- endif -%}
+                {%- endfor -%}
+                {%- if paginate.next -%}
+                  <a href="{{ paginate.next.url }}" rel="next">Next</a>
+                {%- endif -%}
+              </nav>
+            {%- endif -%}
+          {%- else -%}
+            <div class="commerce-empty">
+              <p class="section-description">You have not placed an order yet.</p>
+              <div class="nice-button-box">
+                <a class="nice-button btn-sm" href="{{ routes.all_products_collection_url }}">Shop all products</a>
+              </div>
+            </div>
+          {%- endif -%}
+        {% endpaginate %}
+      </div>
+
+      <div class="glass-card commerce-panel">
+        <h2>Default address</h2>
+
+        {%- if customer.default_address -%}
+          <address class="description" style="font-style: normal;">
+            {{ customer.default_address | format_address }}
+          </address>
+        {%- else -%}
+          <p class="description">No address saved yet.</p>
+        {%- endif -%}
+
+        <div class="nice-button-box">
+          <a class="nice-button grey btn-sm" href="{{ routes.account_addresses_url }}">Manage addresses</a>
+        </div>
+
+        <p style="font-size: .9rem;">
+          <a href="{{ routes.account_logout_url }}" style="text-decoration: underline;">Log out</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>

@@ -1,0 +1,125 @@
+{%- comment -%}
+  Header. Server-rendered replacement for renderHeader() in the static site's site.js.
+
+  Class names and structure are reproduced exactly so assets/site.css and the
+  initNav() behaviour in assets/site.js keep working:
+    .nav-container > .nav > .nav-left (.logo-container.nav-pill, .hamburger-container.nav-pill)
+                          > .tab-container.nav-pill.compact > .nav-tab
+                            (a parent with children becomes .nav-dropdown-wrap > a.nav-tab.has-dropdown + .dropdown-panel)
+                          > .nav-user-controls
+                   > .mobile-menu.glass-card#mobile-menu > .mobile-menu-item
+
+  Differences from the static version:
+    - tabs come from a Shopify link list instead of MZ.nav
+    - the empty .nav-user-controls slot now holds a cart link
+{%- endcomment -%}
+
+{%- assign nav_menu = linklists['main-menu'] -%}
+{%- if section.settings.menu != blank -%}
+  {%- assign nav_menu = section.settings.menu -%}
+{%- endif -%}
+
+{%- assign logo_text = section.settings.logo_text -%}
+{%- if logo_text == blank -%}
+  {%- assign logo_text = shop.name -%}
+{%- endif -%}
+
+{%- assign brand_logo = section.settings.logo -%}
+{%- if brand_logo == blank -%}
+  {%- assign brand_logo = settings.logo -%}
+{%- endif -%}
+
+<div class="nav-container">
+  <nav class="nav" aria-label="{{ 'layout.navigation.primary' | t }}">
+    <div class="nav-left">
+      <a href="{{ routes.root_url }}" class="logo-container nav-pill" aria-label="{{ 'layout.navigation.home_link' | t: shop: shop.name }}">
+        {% if brand_logo != blank %}
+          <img src="{{ brand_logo | image_url: width: 90 }}" width="30" height="30" alt="{{ shop.name | escape }}">
+        {% else %}
+          <img src="{{ 'brand-logo-96.png' | asset_url }}" width="30" height="30" alt="">
+        {% endif %}
+        <span class="logo-text">{{ logo_text }}</span>
+      </a>
+      <button type="button" class="hamburger-container nav-pill" aria-label="{{ 'layout.navigation.open_menu' | t }}" aria-expanded="false" aria-controls="mobile-menu">{% render 'icon', name: 'bars' %}</button>
+    </div>
+
+    <div class="tab-container nav-pill compact">
+      {%- for link in nav_menu.links -%}
+        {%- capture icon_name -%}{% render 'nav-icon', link: link %}{%- endcapture -%}
+        {%- assign icon_name = icon_name | strip -%}
+        {%- assign is_active = false -%}
+        {%- if link.active or link.child_active -%}
+          {%- assign is_active = true -%}
+        {%- endif -%}
+        {%- if link.links.size > 0 -%}
+          <div class="nav-dropdown-wrap">
+            <a class="nav-tab has-dropdown{% if is_active %} active{% endif %}" href="{{ link.url }}" aria-haspopup="true" aria-expanded="false" aria-controls="nav-dropdown-{{ forloop.index }}"{% if link.active %} aria-current="page"{% endif %}><span class="icon-wrapper">{% render 'icon', name: icon_name %}</span><span>{{ link.title | escape }}</span><span class="active-tab-underline" aria-hidden="true"></span></a>
+            <div class="dropdown-panel" id="nav-dropdown-{{ forloop.index }}" aria-label="{{ link.title | escape }}">
+              {%- for child in link.links -%}
+                <a class="nav-tab" href="{{ child.url }}"{% if child.active %} aria-current="page"{% endif %}><span class="dot" aria-hidden="true"></span><span>{{ child.title | escape }}</span></a>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- else -%}
+          <a class="nav-tab{% if is_active %} active{% endif %}" href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}><span class="icon-wrapper">{% render 'icon', name: icon_name %}</span><span>{{ link.title | escape }}</span><span class="active-tab-underline" aria-hidden="true"></span></a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="nav-user-controls">
+      <a class="btn-clear cart-link" style="gap:10px" href="{{ routes.cart_url }}" aria-label="{{ 'layout.cart.title' | t }} ({{ cart.item_count }})">
+        <span class="btn-clear__arrow">{% render 'icon', name: 'cart' %}</span>
+        <span class="cart-count" data-cart-count>{{ cart.item_count }}</span>
+      </a>
+    </div>
+  </nav>
+
+  <nav class="mobile-menu glass-card" id="mobile-menu" aria-label="{{ 'layout.navigation.mobile' | t }}">
+    {%- for link in nav_menu.links -%}
+      {%- capture icon_name -%}{% render 'nav-icon', link: link %}{%- endcapture -%}
+      {%- assign icon_name = icon_name | strip -%}
+      {%- assign is_active = false -%}
+      {%- if link.active or link.child_active -%}
+        {%- assign is_active = true -%}
+      {%- endif -%}
+      <a class="mobile-menu-item{% if is_active %} active{% endif %}" href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}>{% render 'icon', name: icon_name %}<span>{{ link.title | escape }}</span></a>
+      {%- if link.links.size > 0 -%}
+        <div class="mobile-menu-sub">
+          {%- for child in link.links -%}
+            <a class="title-tag nav-tag" href="{{ child.url }}">{{ child.title | escape }}</a>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    <a class="mobile-menu-item" href="{{ routes.cart_url }}">{% render 'icon', name: 'cart' %}<span>{{ 'layout.cart.title' | t }} ({{ cart.item_count }})</span></a>
+  </nav>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image",
+      "info": "Rendered 30px square in the header. Leave empty to use the packaged brand-logo-96.png asset."
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo text",
+      "default": "MIZTWEAKZ",
+      "info": "Shown beside the logo above 1415px. Leave empty to use the store name."
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu",
+      "info": "Falls back to the main-menu link list."
+    }
+  ]
+}
+{% endschema %}

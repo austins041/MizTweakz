@@ -1,0 +1,183 @@
+{% comment %}
+  Shared legal / long-form prose template. Assign it to Terms of Service,
+  Privacy Policy or any other policy page and the copy lives in the admin.
+
+  Layout matches the static site/tos/index.html: legal banner, narrow prose
+  column, numbered sections and the sticky table of contents. The numbering,
+  the section splits and the contents list are built from the H2 headings in
+  {{ page.content }} so the admin only has to write headings and paragraphs.
+{% endcomment %}
+
+{{ 'page-legal.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  /* single column until the contents list is built (and for pages with no headings) */
+  .legal-layout--single { grid-template-columns: minmax(0, 800px); }
+  /* this template is one of the dense ones (static .page--tight) */
+  #main-content { gap: clamp(2rem, 4vw, 4rem); }
+{% endstyle %}
+
+  <!-- banner (Paragon ShortBanner / legal hero) -->
+  <section class="banner banner--legal" data-mount aria-labelledby="page-title">
+    <div class="banner-content">
+      <h1 class="banner-title" id="page-title">{{ page.title }}</h1>
+      {%- if page.metafields.custom.subtitle != blank %}
+        <p class="banner-subtitle">{{ page.metafields.custom.subtitle }}</p>
+      {%- endif %}
+    </div>
+  </section>
+
+  <div class="legal-layout legal-layout--single">
+
+    <!-- sticky CONTENTS (compact pill list under 1200px). Filled from the H2s below. -->
+    <nav class="legal-toc" aria-label="Contents" data-legal-toc hidden>
+      <span class="legal-toc-title">Contents</span>
+      <ol></ol>
+    </nav>
+
+    <div class="legal-content" data-legal-content>
+
+      <div class="legal-prose" data-legal-prose>
+        {{ page.content }}
+      </div>
+
+      <footer class="legal-footer">
+        <div class="legal-links">
+          <a class="footer-link footer-link--internal" href="/pages/contact">Contact Us <i data-icon="arrow-right"></i></a>
+          <a class="footer-link" href="https://discord.gg/tT4HSfAWrt" target="_blank" rel="noopener noreferrer">Contact Us on Discord <i data-icon="arrow-up-right"></i><span class="sr-only">(opens in a new tab)</span></a>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+
+{% raw %}
+<script>
+/* Legal pages: split the admin's prose into numbered sections at every H2,
+   build the CONTENTS list from those headings and highlight the current one. */
+(function () {
+  'use strict';
+
+  function slug(text, fallback) {
+    var s = String(text || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    return s || fallback;
+  }
+
+  function build() {
+    var prose = document.querySelector('[data-legal-prose]');
+    var content = document.querySelector('[data-legal-content]');
+    var toc = document.querySelector('[data-legal-toc]');
+    if (!prose || !content) return [];
+
+    var nodes = Array.prototype.slice.call(prose.childNodes);
+    var intro = [], groups = [], current = null;
+    nodes.forEach(function (node) {
+      if (node.nodeType === 1 && node.tagName === 'H2') {
+        current = { head: node, nodes: [node] };
+        groups.push(current);
+      } else if (current) {
+        current.nodes.push(node);
+      } else {
+        intro.push(node);
+      }
+    });
+    if (!groups.length) return [];
+
+    var frag = document.createDocumentFragment();
+
+    if (intro.length) {
+      var lead = document.createElement('div');
+      lead.className = 'legal-intro legal-prose';
+      intro.forEach(function (n) { lead.appendChild(n); });
+      if (lead.textContent.trim() || lead.children.length) frag.appendChild(lead);
+    }
+
+    var sections = [];
+    groups.forEach(function (g, i) {
+      var title = g.head.textContent.trim();
+      var id = g.head.id || slug(title, 'section-' + (i + 1));
+      var sec = document.createElement('section');
+      sec.className = 'legal-section legal-prose';
+      sec.id = id;
+      sec.setAttribute('aria-labelledby', id + '-title');
+      g.nodes.forEach(function (n) { sec.appendChild(n); });
+
+      g.head.id = id + '-title';
+      var num = document.createElement('span');
+      num.className = 'legal-num';
+      num.textContent = (i + 1) + '.';
+      g.head.insertBefore(document.createTextNode(' '), g.head.firstChild);
+      g.head.insertBefore(num, g.head.firstChild);
+      var anchor = document.createElement('a');
+      anchor.className = 'legal-anchor';
+      anchor.href = '#' + id;
+      anchor.textContent = '#';
+      anchor.setAttribute('aria-label', 'Link to section ' + (i + 1) + ', ' + title);
+      g.head.appendChild(anchor);
+
+      frag.appendChild(sec);
+      sections.push({ id: id, title: title });
+    });
+
+    content.insertBefore(frag, prose);
+    content.removeChild(prose);
+
+    if (toc) {
+      var list = toc.querySelector('ol');
+      sections.forEach(function (s) {
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.href = '#' + s.id;
+        a.textContent = s.title;
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+      toc.hidden = false;
+      var layout = toc.parentNode;
+      if (layout) layout.classList.remove('legal-layout--single');
+    }
+    return sections;
+  }
+
+  /* highlight the current section in the CONTENTS list */
+  function spy() {
+    var links = document.querySelectorAll('.legal-toc a[href^="#"]');
+    if (!links.length || !('IntersectionObserver' in window)) return;
+    var targets = [], current = null;
+    Array.prototype.forEach.call(links, function (a) {
+      var el = document.getElementById(a.getAttribute('href').slice(1));
+      if (el) targets.push(el);
+    });
+    var strip = document.querySelector('.legal-toc ol');
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function setActive(id) {
+      if (current === id) return;
+      current = id;
+      var active = null;
+      Array.prototype.forEach.call(links, function (a) {
+        var on = a.getAttribute('href') === '#' + id;
+        a.classList.toggle('is-active', on);
+        if (on) active = a;
+      });
+      /* phones: the TOC is a horizontal pill strip. Centre the active pill (scrolls the strip only, never the page) */
+      if (active && strip && strip.scrollWidth > strip.clientWidth + 1) {
+        var li = active.parentNode;
+        strip.scrollTo({ left: li.offsetLeft - (strip.clientWidth - li.offsetWidth) / 2, behavior: reduce ? 'auto' : 'smooth' });
+      }
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) setActive(e.target.id); });
+    }, { rootMargin: '-40% 0px -45% 0px', threshold: 0 });
+    targets.forEach(function (t) { io.observe(t); });
+    if (targets.length) setActive(targets[0].id);
+  }
+
+  function ready() {
+    build();
+    spy();
+    if (window.MZ && window.MZ.ui && window.MZ.ui.hydrateIcons) window.MZ.ui.hydrateIcons(document);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready); else ready();
+})();
+</script>
+{% endraw %}

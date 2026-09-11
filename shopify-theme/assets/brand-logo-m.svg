@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="M logo">
+  <!-- Owner-supplied "M" mark (2026-09-05): heavy block M, dark vertical gradient, transparent background. -->
+  <defs>
+    <linearGradient id="mg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3b3b3b"/>
+      <stop offset=".55" stop-color="#181818"/>
+      <stop offset="1" stop-color="#050505"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#mg)" d="M24 220V36h70l34 82 34-82h70v184h-52V108l-34 78h-36l-34-78v112z"/>
+</svg>

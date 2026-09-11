@@ -1,0 +1,83 @@
+{
+  "general": {
+    "accessibility": {
+      "skip_to_content": "Skip to content",
+      "close": "Close",
+      "loading": "Loading"
+    },
+    "meta": {
+      "page": "Page {{ page }}"
+    },
+    "search": {
+      "title": "Search",
+      "placeholder": "Search the store",
+      "submit": "Search",
+      "no_results": "No results for \"{{ terms }}\". Try a different search."
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "label": "Pagination"
+    },
+    "continue_shopping": "Continue shopping"
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to cart",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "on_sale": "Sale",
+      "quantity": "Quantity",
+      "regular_price": "Regular price",
+      "sale_price": "Sale price",
+      "price": "Price",
+      "description": "Description",
+      "view_details": "View details",
+      "vendor": "Vendor",
+      "include_taxes": "Taxes included. Shipping calculated at checkout."
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Your cart",
+      "empty": "Your cart is empty.",
+      "continue_shopping": "Continue shopping",
+      "subtotal": "Subtotal",
+      "checkout": "Check out",
+      "update": "Update",
+      "remove": "Remove",
+      "quantity": "Quantity",
+      "item_count": {
+        "one": "{{ count }} item",
+        "other": "{{ count }} items"
+      },
+      "note": "Order note",
+      "taxes_and_shipping_at_checkout": "Taxes and shipping calculated at checkout."
+    }
+  },
+  "layout": {
+    "navigation": {
+      "primary": "Primary",
+      "mobile": "Mobile",
+      "home_link": "{{ shop }} home",
+      "open_menu": "Open menu",
+      "close_menu": "Close menu"
+    },
+    "cart": {
+      "title": "Cart",
+      "items_count": {
+        "one": "{{ count }} item",
+        "other": "{{ count }} items"
+      }
+    },
+    "footer": {
+      "navigate": "Navigate",
+      "legal": "Legal",
+      "privacy_policy": "Privacy Policy",
+      "terms_of_service": "Terms of Service",
+      "refund_policy": "Refund Policy",
+      "cookie_preferences": "Cookie Preferences",
+      "rights_reserved": "All rights reserved."
+    }
+  }
+}

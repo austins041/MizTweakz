@@ -1,0 +1,124 @@
+{% comment %}
+  Search results. Products render through the shared card snippet, pages and
+  articles render as a title plus an excerpt. Header and footer come from the
+  layout.
+{% endcomment %}
+
+{% style %}
+  .commerce-card-title a:hover { color: var(--accent-bright); }
+  .commerce-card-media { display: block; }
+  .commerce-from { margin-left: 0; }
+  .commerce-placeholder { width: 70%; height: auto; opacity: .35; }
+  .commerce-searchbar { display: flex; flex-wrap: wrap; gap: 12px; max-width: 640px; margin: 0 auto 2.5rem; }
+  .commerce-searchbar .form-input { flex: 1 1 240px; }
+  .commerce-result { display: flex; flex-direction: column; gap: .5rem; padding: 1.5rem; }
+  .commerce-result h2 { font-size: 1.3rem; }
+  .commerce-result h2 a:hover { color: var(--accent-bright); }
+  .commerce-empty { display: flex; flex-direction: column; align-items: center; gap: 1.25rem; text-align: center; padding: clamp(2rem, 6vw, 4rem) 1.5rem; }
+  .commerce-pagination { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin-top: 3rem; }
+  .commerce-pagination a, .commerce-pagination span { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; padding: 0 12px; border-radius: var(--radius-sm); border: 1px solid var(--hairline); color: var(--text-70); }
+  .commerce-pagination a:hover { border-color: var(--accent); color: #fff; }
+  .commerce-pagination .is-current { border-color: var(--accent); color: #fff; }
+  .commerce-pagination .is-gap { border: 0; min-width: 0; }
+{% endstyle %}
+
+<section class="banner" data-mount aria-labelledby="commerce-search-title">
+  <div class="banner-content">
+    <h1 class="banner-title" id="commerce-search-title">Search</h1>
+    {%- if search.performed -%}
+      <p class="banner-subtitle">
+        {%- if search.results_count > 0 -%}
+          {{ search.results_count }} {% if search.results_count == 1 %}result{% else %}results{% endif %} for "{{ search.terms | escape }}"
+        {%- else -%}
+          No results for "{{ search.terms | escape }}"
+        {%- endif -%}
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+<section class="section animate" aria-label="Search">
+  <div class="container">
+
+    <form class="commerce-searchbar" action="/search" method="get" role="search">
+      <input type="hidden" name="options[prefix]" value="last">
+      <label class="sr-only" for="commerce-search-input">Search the store</label>
+      <input class="form-input"
+             type="search"
+             id="commerce-search-input"
+             name="q"
+             value="{{ search.terms | escape }}"
+             placeholder="Search products and pages"
+             autocomplete="off">
+      <div class="nice-button-box">
+        <button type="submit" class="nice-button btn-sm">Search</button>
+      </div>
+    </form>
+
+    {%- if search.performed -%}
+      {% paginate search.results by 24 %}
+        {%- if search.results_count > 0 -%}
+          <div class="pack-grid">
+            {%- for item in search.results -%}
+              {%- if item.object_type == 'product' -%}
+                {% render 'commerce-product-card', product: item, heading_tag: 'h2' %}
+              {%- else -%}
+                {%- if item.object_type == 'article' -%}
+                  {%- assign result_excerpt = item.excerpt_or_content | strip_html | truncatewords: 30 -%}
+                {%- else -%}
+                  {%- assign result_excerpt = item.content | strip_html | truncatewords: 30 -%}
+                {%- endif -%}
+                <article class="glass-card glass-card--hover commerce-result">
+                  <span class="title-tag">{{ item.object_type | capitalize }}</span>
+                  <h2><a href="{{ item.url }}">{{ item.title | escape }}</a></h2>
+                  {%- if result_excerpt != blank -%}
+                    <p class="description">{{ result_excerpt }}</p>
+                  {%- endif -%}
+                </article>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          {%- if paginate.pages > 1 -%}
+            <nav class="commerce-pagination" role="navigation" aria-label="Pagination">
+              {%- if paginate.previous -%}
+                <a href="{{ paginate.previous.url }}" rel="prev">Previous</a>
+              {%- endif -%}
+              {%- for part in paginate.parts -%}
+                {%- if part.is_link -%}
+                  <a href="{{ part.url }}" aria-label="Page {{ part.title }}">{{ part.title }}</a>
+                {%- elsif part.title == paginate.current_page -%}
+                  <span class="is-current" aria-current="page">{{ part.title }}</span>
+                {%- else -%}
+                  <span class="is-gap">{{ part.title }}</span>
+                {%- endif -%}
+              {%- endfor -%}
+              {%- if paginate.next -%}
+                <a href="{{ paginate.next.url }}" rel="next">Next</a>
+              {%- endif -%}
+            </nav>
+          {%- endif -%}
+        {%- else -%}
+          <div class="glass-card glass-card--pad commerce-empty">
+            <i data-icon="info" aria-hidden="true"></i>
+            <h2 class="section-subtitle">Nothing matched that search</h2>
+            <p class="section-description">Check the spelling, try a shorter phrase, or browse everything in the store.</p>
+            <div class="nice-button-box">
+              <a class="nice-button btn-md" href="{{ routes.all_products_collection_url }}">Shop all products</a>
+            </div>
+          </div>
+        {%- endif -%}
+      {% endpaginate %}
+    {%- else -%}
+      <div class="glass-card glass-card--pad commerce-empty">
+        <i data-icon="info" aria-hidden="true"></i>
+        <h2 class="section-subtitle">What are you looking for?</h2>
+        <p class="section-description">Type a product name above, or browse everything in the store.</p>
+        <div class="nice-button-box">
+          <a class="nice-button btn-md" href="{{ routes.all_products_collection_url }}">Shop all products</a>
+        </div>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>

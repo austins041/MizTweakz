@@ -1,0 +1,19 @@
+{%- comment -%}
+  Icon placeholder.
+
+  The static site and this theme both use the same pattern: markup writes
+  <i data-icon="name"></i> and assets/site.js swaps it for an inline SVG on load
+  (MZ.ui.hydrateIcons(root) for markup injected after boot).
+
+  Usage:
+    {% render 'icon', name: 'bars' %}
+    {% render 'icon', name: 'cart', class: 'cart-icon' %}
+
+  Names defined in assets/site.js (ICONS):
+    home tags wrench info users envelope bars times check arrow-right
+    arrow-up-right chevron-down plus gauge stopwatch signal shield shield-half
+    lock undo book headset download infinity external broom cookie copy cart
+    bolt crown star discord youtube tiktok instagram twitch kick
+    aff-account aff-share aff-earn
+{%- endcomment -%}
+{%- if name != blank -%}<i data-icon="{{ name }}"{% if class != blank %} class="{{ class }}"{% endif %}></i>{%- endif -%}

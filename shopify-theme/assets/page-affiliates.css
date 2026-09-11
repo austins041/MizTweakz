@@ -1,0 +1,109 @@
+/* =========================================================================
+   MIZTWEAKZ — page-affiliates.css  (Paragon PartnersView: banner → PartnerCard)
+   Loaded after site.css on /affiliates/ only.
+   ========================================================================= */
+
+/* ---- PartnerCard (banner art + round icon + two panels) ---- */
+.partner-card-container { width: 100%; max-width: min(1400px, 95dvw); margin: 0 auto; }
+.partner-card { padding: 3px; display: flex; flex-direction: column; }
+.partner-head { position: relative; }
+.partner-banner { border-radius: 18px; overflow: hidden; aspect-ratio: 1114 / 260; background: #17171a; }
+.partner-banner img { width: 100%; height: 100%; object-fit: cover; }
+.partner-icon {
+  position: absolute; left: 42px; bottom: -33px; z-index: 2;
+  width: 66px; height: 66px; border-radius: 50%;
+  display: grid; place-items: center;
+  color: var(--accent);
+  background: #1f1f21;
+  border: 3px solid rgba(255, 255, 255, .15);
+  box-shadow: 0 0 22px rgba(var(--ambient-rgb), calc(.45 * var(--glow, 1)));
+}
+.partner-icon .icon { width: 28px; height: 28px; }
+.panel-box { display: flex; flex-wrap: wrap; gap: 2rem; padding: 56px 30px 30px; align-items: stretch; }
+.partner-panel { flex: 1 1 360px; max-width: 460px; display: flex; flex-direction: column; gap: 1rem; }
+.partner-card .partner-title { font-size: clamp(1.9rem, 3vw, 2.2rem); font-weight: 500; line-height: 1.1; margin: 0; } /* outranks .section-with-bar h2 */
+.partner-desc { color: var(--text-70); line-height: 1.7; }
+.separator-dots { width: 80%; margin: .25rem 0; border: 0; border-top: 4px dotted #444; }
+.code-row { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; font-family: var(--font-display); font-size: 1.3rem; color: #fff; }
+.discount-tag {
+  --color: var(--accent);
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: var(--radius-sm);
+  color: var(--color);
+  background: rgba(var(--ambient-rgb), calc(.12 * var(--glow, 1)));
+  border: 1px solid rgba(var(--ambient-rgb), calc(.35 * var(--glow, 1)));
+  font-family: var(--font-display); font-size: 1rem; font-weight: 600; letter-spacing: .03em;
+  white-space: nowrap;
+}
+.discount-tag .icon { width: 14px; height: 14px; }
+.partner-actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-top: auto; }
+.partner-tiles { flex: 1 1 420px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; align-content: stretch; }
+.corner-dots {
+  position: relative; min-height: 200px; padding: 18px;
+  border-radius: 12px; background: rgba(78, 78, 78, .2);
+  display: flex; flex-direction: column; justify-content: space-between; gap: 1rem;
+}
+.corner-dots::before {
+  content: ""; position: absolute; top: 10px; right: 10px; width: 18px; height: 18px;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, .35) 1.2px, transparent 1.7px);
+  background-size: 6px 6px;
+}
+.corner-dots h3 { font-size: 1.2rem; font-weight: 600; line-height: 1.2; padding-right: 20px; }
+.corner-dots p { font-size: .9rem; line-height: 1.6; color: var(--muted); }
+
+/* ---- how it works: numbered step badge on the shared .step-card ---- */
+.step-card { position: relative; }
+.step-num {
+  position: absolute; top: 1.25rem; right: 1.25rem;
+  font-family: var(--font-display); font-size: 2.5rem; font-weight: 700; line-height: 1;
+  color: rgba(255, 255, 255, .08);
+}
+
+/* ---- commission tiers ---- */
+.tier-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; width: 100%; max-width: 1200px; margin: 2.5rem auto 0; }
+.tier-card { --color: var(--accent); padding: 1.75rem; display: flex; flex-direction: column; gap: .75rem; }
+.tier-name { font-size: .75rem; font-weight: 500; letter-spacing: .25em; text-transform: uppercase; color: var(--text-50); }
+.tier-rate { font-family: var(--font-display); font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 700; line-height: 1; color: var(--color); }
+.tier-rate--gradient { background: var(--gradient-ultimate); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.tier-card > p { color: var(--text-70); font-size: .95rem; line-height: 1.7; }
+.tier-card .features { margin-top: .25rem; padding-top: 1rem; border-top: 1px solid var(--hairline); }
+.no-cap { margin-top: 1.5rem; text-align: center; color: var(--text-50); font-size: .9rem; }
+.no-cap strong { color: var(--accent); font-weight: 600; }
+
+/* ---- featured creator badges ---- */
+.creator-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; width: 100%; max-width: 1000px; margin: 2.5rem auto 0; } /* owner: 3 x 3, equal columns */
+.creator-badge { display: flex; flex-direction: column; align-items: center; gap: .75rem; padding: 1.25rem; text-align: center; }
+.creator-badge img { width: 100%; max-width: 200px; height: auto; filter: grayscale(1); opacity: .7; transition: filter .4s ease, opacity .4s ease, transform .4s ease; }
+.creator-badge:hover img { filter: none; opacity: 1; transform: scale(1.04); }
+.creator-badge p { font-size: .85rem; color: var(--muted); }
+
+/* ---- responsive (Paragon: ≤944 panels stack, ≤600 tiles single column, pills 2×2 ≤540) ---- */
+@media (max-width: 1200px) { .tier-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); } .creator-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 944px) {
+  .panel-box { flex-direction: column; padding: 56px 30px 30px; }
+  .partner-panel { max-width: none; text-align: center; align-items: center; }
+  .separator-dots { width: 100%; }
+  .partner-actions { justify-content: center; }
+}
+@media (max-width: 800px) { .creator-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) {
+  .partner-tiles { grid-template-columns: 1fr; }
+  .corner-dots { min-height: 0; }
+  .panel-box { padding: 50px 20px 20px; }
+  .partner-icon { left: 24px; }
+  .partner-actions, .partner-actions > * { width: 100%; }
+  .partner-actions .nice-button, .partner-actions .btn-clear { width: 100%; justify-content: center; }
+}
+@media (max-width: 540px) { .banner-pills { display: grid; grid-template-columns: repeat(2, max-content); } }
+@media (max-width: 420px) { .creator-grid { grid-template-columns: 1fr 1fr; gap: .75rem; } .creator-badge { padding: .75rem; } }
+
+/* ---- platform cards: real brand marks (owner request 2026-09-09) ---- */
+.platform-card { --brand: #fff; }
+.platform-logo { width: 84px; height: 84px; display: grid; place-items: center; border-radius: 22px; background: rgba(255, 255, 255, .06); border: 1px solid var(--hairline); box-shadow: 0 0 30px rgba(var(--ambient-rgb), calc(.12 * var(--glow, 1))); transition: transform .3s ease, box-shadow .3s ease; }
+.platform-logo .icon { width: 44px; height: 44px; color: var(--brand); }
+.platform-card:hover .platform-logo { transform: scale(1.06); box-shadow: 0 0 40px rgba(var(--ambient-rgb), calc(.22 * var(--glow, 1))); }
+.platform-name { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin: 0; color: var(--heading); }
+
+/* ---- custom step icons (owner request 2026-09-09): bigger two-tone tiles ---- */
+.how-it-works .step-icon { width: 68px; height: 68px; border-radius: 18px; background: linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.03)); border: 1px solid rgba(255,255,255,.12); box-shadow: 0 8px 24px rgba(0,0,0,.35), inset 0 1px rgba(255,255,255,.18); }
+.how-it-works .step-icon .icon { width: 36px; height: 36px; stroke-width: 1.75; }

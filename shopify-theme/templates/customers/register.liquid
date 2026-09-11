@@ -1,0 +1,65 @@
+{% comment %}
+  Create an account. Header and footer come from the layout.
+{% endcomment %}
+
+{% style %}
+  .commerce-account { display: flex; flex-direction: column; gap: 1.25rem; padding: 1.75rem; }
+  .commerce-account .form-label { text-align: left; }
+  .commerce-account-links { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; font-size: .9rem; color: var(--text-50); }
+  .commerce-account-links a { text-decoration: underline; }
+  .commerce-errors ul { list-style: disc; padding-left: 1.25rem; }
+{% endstyle %}
+
+<section class="banner" data-mount aria-labelledby="commerce-register-title">
+  <div class="banner-content">
+    <h1 class="banner-title" id="commerce-register-title">Create account</h1>
+    <p class="banner-subtitle">Keep your orders and downloads in one place.</p>
+  </div>
+</section>
+
+<section class="section animate" aria-label="Create account">
+  <div class="container container--narrow" style="max-width: 520px;">
+    <div class="glass-card commerce-account">
+      {% form 'create_customer' %}
+        {%- if form.errors -%}
+          <div class="status-message status-message--error commerce-errors" role="alert">
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div>
+          <label class="form-label" for="commerce-register-first">First name</label>
+          <input class="form-input" type="text" id="commerce-register-first" name="customer[first_name]"
+                 value="{{ form.first_name | escape }}" autocomplete="given-name">
+        </div>
+
+        <div>
+          <label class="form-label" for="commerce-register-last">Last name</label>
+          <input class="form-input" type="text" id="commerce-register-last" name="customer[last_name]"
+                 value="{{ form.last_name | escape }}" autocomplete="family-name">
+        </div>
+
+        <div>
+          <label class="form-label" for="commerce-register-email">Email</label>
+          <input class="form-input" type="email" id="commerce-register-email" name="customer[email]"
+                 value="{{ form.email | escape }}" autocomplete="email" autocapitalize="off" spellcheck="false" required>
+        </div>
+
+        <div>
+          <label class="form-label" for="commerce-register-password">Password</label>
+          <input class="form-input" type="password" id="commerce-register-password" name="customer[password]"
+                 autocomplete="new-password" required>
+        </div>
+
+        <div class="nice-button-box">
+          <button type="submit" class="nice-button btn-md">Create account</button>
+        </div>
+      {% endform %}
+
+      <div class="commerce-account-links">
+        <a href="{{ routes.account_login_url }}">Already have an account? Log in</a>
+        <a href="{{ routes.root_url }}">Back to the store</a>
+      </div>
+    </div>
+  </div>
+</section>

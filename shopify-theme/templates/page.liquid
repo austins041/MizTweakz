@@ -1,0 +1,40 @@
+{% comment %}
+  Default page template.
+
+  Any Shopify page without an alternate template renders here: the shared
+  banner with the page title, then whatever the admin typed, inside the
+  theme's prose container. Header and footer come from the layout.
+{% endcomment %}
+
+{{ 'page-legal.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  /* single column variant of .legal-layout (no table of contents on a plain page) */
+  .legal-layout--single { grid-template-columns: minmax(0, 800px); }
+  /* this template is one of the dense ones (static .page--tight) */
+  #main-content { gap: clamp(2rem, 4vw, 4rem); }
+{% endstyle %}
+
+  <section class="banner banner--legal" data-mount aria-labelledby="page-title">
+    <div class="banner-content">
+      <h1 class="banner-title" id="page-title">{{ page.title }}</h1>
+    </div>
+  </section>
+
+  <div class="legal-layout legal-layout--single">
+    <div class="legal-content">
+      {% if page.content != blank %}
+        <div class="legal-section legal-prose">
+          {{ page.content }}
+        </div>
+      {% endif %}
+
+      <footer class="legal-footer">
+        <div class="legal-links">
+          <a class="footer-link footer-link--internal" href="{{ routes.root_url }}">Back to the store <i data-icon="arrow-right"></i></a>
+          <a class="footer-link footer-link--internal" href="/pages/contact">Contact Us <i data-icon="arrow-right"></i></a>
+        </div>
+      </footer>
+    </div>
+  </div>
+

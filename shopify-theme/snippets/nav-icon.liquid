@@ -1,0 +1,44 @@
+{%- comment -%}
+  Maps one Shopify link list entry to an icon name from the ICONS map in assets/site.js.
+
+  Usage:
+    {%- capture icon_name -%}{% render 'nav-icon', link: link %}{%- endcapture -%}
+    {%- assign icon_name = icon_name | strip -%}
+    {% render 'icon', name: icon_name %}
+
+  The static site carried an explicit icon per MZ.nav entry. Shopify link lists
+  have no icon field, so the type is used first and the title refines it.
+{%- endcomment -%}
+{%- assign icon_name = 'tags' -%}
+{%- case link.type -%}
+  {%- when 'frontpage_link' -%}
+    {%- assign icon_name = 'home' -%}
+  {%- when 'blog_link' -%}
+    {%- assign icon_name = 'book' -%}
+  {%- when 'article_link' -%}
+    {%- assign icon_name = 'book' -%}
+  {%- when 'page_link' -%}
+    {%- assign icon_name = 'info' -%}
+  {%- when 'search_link' -%}
+    {%- assign icon_name = 'info' -%}
+{%- endcase -%}
+{%- assign link_title = link.title | downcase -%}
+{%- if link_title contains 'home' -%}
+  {%- assign icon_name = 'home' -%}
+{%- endif -%}
+{%- if link_title contains 'util' or link_title contains 'tool' or link_title contains 'app' or link_title contains 'download' -%}
+  {%- assign icon_name = 'wrench' -%}
+{%- endif -%}
+{%- if link_title contains 'about' or link_title contains 'faq' -%}
+  {%- assign icon_name = 'info' -%}
+{%- endif -%}
+{%- if link_title contains 'affiliate' or link_title contains 'partner' or link_title contains 'account' -%}
+  {%- assign icon_name = 'users' -%}
+{%- endif -%}
+{%- if link_title contains 'contact' or link_title contains 'support' -%}
+  {%- assign icon_name = 'envelope' -%}
+{%- endif -%}
+{%- if link_title contains 'cart' or link_title contains 'checkout' -%}
+  {%- assign icon_name = 'cart' -%}
+{%- endif -%}
+{{- icon_name -}}

@@ -1,0 +1,97 @@
+{% comment %}
+  Customer login, plus the password recovery form. The recovery form is a
+  <details> block so it works without JavaScript; the small script only opens
+  it when Shopify sends the customer back to /account/login#recover.
+{% endcomment %}
+
+{% style %}
+  .commerce-account { display: flex; flex-direction: column; gap: 1.25rem; padding: 1.75rem; }
+  .commerce-account .form-label { text-align: left; }
+  .commerce-account-links { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; font-size: .9rem; color: var(--text-50); }
+  .commerce-account-links a { text-decoration: underline; }
+  .commerce-recover summary { cursor: pointer; font-size: .9rem; color: var(--text-50); min-height: 44px; display: flex; align-items: center; }
+  .commerce-recover summary:hover { color: #fff; }
+  .commerce-errors ul { list-style: disc; padding-left: 1.25rem; }
+{% endstyle %}
+
+<section class="banner" data-mount aria-labelledby="commerce-login-title">
+  <div class="banner-content">
+    <h1 class="banner-title" id="commerce-login-title">Log in</h1>
+    <p class="banner-subtitle">Sign in to see your orders and downloads.</p>
+  </div>
+</section>
+
+<section class="section animate" aria-label="Account login">
+  <div class="container container--narrow" style="max-width: 520px;">
+
+    <div class="glass-card commerce-account">
+      {% form 'customer_login' %}
+        {%- if form.errors -%}
+          <div class="status-message status-message--error commerce-errors" role="alert">
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div>
+          <label class="form-label" for="commerce-login-email">Email</label>
+          <input class="form-input" type="email" id="commerce-login-email" name="customer[email]"
+                 autocomplete="email" autocapitalize="off" spellcheck="false" required>
+        </div>
+
+        <div>
+          <label class="form-label" for="commerce-login-password">Password</label>
+          <input class="form-input" type="password" id="commerce-login-password" name="customer[password]"
+                 autocomplete="current-password" required>
+        </div>
+
+        <div class="nice-button-box">
+          <button type="submit" class="nice-button btn-md">Log in</button>
+        </div>
+      {% endform %}
+
+      <div class="commerce-account-links">
+        <a href="{{ routes.account_register_url }}">Create an account</a>
+        <a href="{{ routes.root_url }}">Back to the store</a>
+      </div>
+    </div>
+
+    <details class="commerce-recover" id="recover" style="margin-top: 1.25rem;">
+      <summary>Forgot your password?</summary>
+
+      <div class="glass-card commerce-account" style="margin-top: .75rem;">
+        {% form 'recover_customer_password' %}
+          {%- if form.errors -%}
+            <div class="status-message status-message--error commerce-errors" role="alert">
+              {{ form.errors | default_errors }}
+            </div>
+          {%- endif -%}
+
+          {%- if form.posted_successfully? -%}
+            <div class="status-message status-message--success" role="status">
+              We sent you an email with a link to reset your password.
+            </div>
+          {%- endif -%}
+
+          <div>
+            <label class="form-label" for="commerce-recover-email">Email</label>
+            <input class="form-input" type="email" id="commerce-recover-email" name="email"
+                   autocomplete="email" autocapitalize="off" spellcheck="false" required>
+          </div>
+
+          <div class="nice-button-box">
+            <button type="submit" class="nice-button grey btn-sm">Send reset link</button>
+          </div>
+        {% endform %}
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<script>
+  (function () {
+    if (window.location.hash !== '#recover') return;
+    var block = document.getElementById('recover');
+    if (block) block.open = true;
+  })();
+</script>

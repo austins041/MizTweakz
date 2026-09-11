@@ -1,0 +1,146 @@
+{%- comment -%}
+  Footer. Server-rendered replacement for renderFooter() in the static site's site.js.
+
+  Structure and class names are reproduced exactly so assets/site.css keeps working:
+    .footer > .footer-glow
+            > .footer-content (.footer-brand, .footer-nav-col x2, .footer-cta.glass-card)
+            > .footer-bottom > .bottom-content > .bottom-text + .accent-bar
+
+  Differences from the static version:
+    - the Navigate column comes from a Shopify link list instead of MZ.nav
+    - the Legal column points at the real Shopify policy routes
+    - the static "student redesign concept" disclosure line is gone: this is the
+      real storefront, so the claim would be false
+{%- endcomment -%}
+
+{%- assign footer_menu = linklists['footer'] -%}
+{%- if section.settings.menu != blank -%}
+  {%- assign footer_menu = section.settings.menu -%}
+{%- endif -%}
+
+{%- assign download_url = section.settings.cta_url -%}
+{%- if download_url == blank -%}
+  {%- assign download_url = settings.download_url -%}
+{%- endif -%}
+
+{%- assign brand_logo = section.settings.logo -%}
+{%- if brand_logo == blank -%}
+  {%- assign brand_logo = settings.logo -%}
+{%- endif -%}
+
+<footer class="footer">
+  <div class="footer-glow" aria-hidden="true"></div>
+  <div class="footer-content">
+    <div class="footer-brand">
+      <a href="{{ routes.root_url }}" class="brand-link" aria-label="{{ 'layout.navigation.home_link' | t: shop: shop.name }}">
+        {% if brand_logo != blank %}
+          <img class="brand-logo" src="{{ brand_logo | image_url: width: 150 }}" width="50" height="50" alt="{{ shop.name | escape }}" loading="lazy">
+        {% else %}
+          <img class="brand-logo" src="{{ 'brand-logo-192.png' | asset_url }}" width="50" height="50" alt="{{ shop.name | escape }}" loading="lazy">
+        {% endif %}
+      </a>
+      <p class="brand-tagline">{{ section.settings.tagline }}</p>
+      <div class="social-links">
+        {%- if settings.discord_url != blank -%}
+          <a class="social-btn" href="{{ settings.discord_url }}" target="_blank" rel="noopener noreferrer" aria-label="Discord">{% render 'icon', name: 'discord' %}</a>
+        {%- endif -%}
+        {%- if settings.youtube_url != blank -%}
+          <a class="social-btn" href="{{ settings.youtube_url }}" target="_blank" rel="noopener noreferrer" aria-label="YouTube">{% render 'icon', name: 'youtube' %}</a>
+        {%- endif -%}
+        {%- if settings.tiktok_url != blank -%}
+          <a class="social-btn" href="{{ settings.tiktok_url }}" target="_blank" rel="noopener noreferrer" aria-label="TikTok">{% render 'icon', name: 'tiktok' %}</a>
+        {%- endif -%}
+        {%- if settings.instagram_url != blank -%}
+          <a class="social-btn" href="{{ settings.instagram_url }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">{% render 'icon', name: 'instagram' %}</a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="footer-nav-col">
+      <h4 class="nav-title">{{ 'layout.footer.navigate' | t }}</h4>
+      <nav class="footer-nav" aria-label="{{ 'layout.footer.navigate' | t }}">
+        {%- for link in footer_menu.links -%}
+          <a class="nav-link" href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+        {%- endfor -%}
+      </nav>
+    </div>
+
+    <div class="footer-nav-col">
+      <h4 class="nav-title">{{ 'layout.footer.legal' | t }}</h4>
+      <nav class="footer-nav" aria-label="{{ 'layout.footer.legal' | t }}">
+        <a class="nav-link" href="/policies/privacy-policy">{{ 'layout.footer.privacy_policy' | t }}</a>
+        <a class="nav-link" href="/policies/terms-of-service">{{ 'layout.footer.terms_of_service' | t }}</a>
+        <a class="nav-link" href="/policies/refund-policy">{{ 'layout.footer.refund_policy' | t }}</a>
+        <button type="button" class="nav-link nav-link-action" data-modal="cookie-prefs">{{ 'layout.footer.cookie_preferences' | t }}</button>
+      </nav>
+    </div>
+
+    <div class="footer-cta glass-card">
+      <h4 class="nav-title">{{ section.settings.cta_title }}</h4>
+      <p class="cta-text">{{ section.settings.cta_text }}</p>
+      <div class="nice-button-box"><a class="nice-button btn-md" href="{{ download_url }}">Download for <span class="free-word">Free</span></a></div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="bottom-content">
+      <div class="bottom-text">
+        <p class="copyright">&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ 'layout.footer.rights_reserved' | t }}</p>
+      </div>
+      <div class="accent-bar" aria-hidden="true"></div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Footer logo",
+      "info": "Rendered 50px square. Leave empty to use the packaged brand-logo-192.png asset."
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "PC tweaks and Windows optimization for competitive gamers."
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Navigate menu",
+      "default": "footer",
+      "info": "Falls back to the footer link list."
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_title",
+      "label": "Title",
+      "default": "Ready to optimize?"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Text",
+      "default": "Get your PC running at peak performance."
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button link",
+      "info": "Leave empty to use the theme wide free download link."
+    },
+    {
+      "type": "paragraph",
+      "content": "Social links come from Theme settings, Links. Discord, YouTube, TikTok and Instagram render in that order, and a blank one is skipped."
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,236 @@
+{% comment %}
+  Saved addresses. Each existing address gets its own edit form inside a
+  <details> block, plus a separate delete form that posts _method=delete, so
+  nothing here depends on JavaScript. Shopify's own shopify_common.js only
+  adds the country and province linkage.
+  Header and footer come from the layout.
+{% endcomment %}
+
+{% style %}
+  .commerce-account { display: flex; flex-direction: column; gap: 1.25rem; padding: 1.75rem; }
+  .commerce-account .form-label { text-align: left; }
+  .commerce-errors ul { list-style: disc; padding-left: 1.25rem; }
+  .commerce-address-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+  .commerce-address-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .commerce-address-actions button { min-height: 44px; }
+  .commerce-fieldrow { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+  .commerce-check { display: flex; align-items: center; gap: 10px; font-size: .9rem; }
+  .commerce-danger { color: var(--error); text-decoration: underline; font-size: .9rem; }
+  details > summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--text-50); }
+  details > summary:hover { color: #fff; }
+{% endstyle %}
+
+<section class="banner" data-mount aria-labelledby="commerce-addresses-title">
+  <div class="banner-content">
+    <h1 class="banner-title" id="commerce-addresses-title">Your addresses</h1>
+  </div>
+</section>
+
+<section class="section animate" aria-label="Addresses">
+  <div class="container container--narrow">
+
+    <div class="glass-card commerce-account">
+      <h2 class="section-subtitle">Add a new address</h2>
+
+      {% form 'customer_address', customer.new_address %}
+        {%- if form.errors -%}
+          <div class="status-message status-message--error commerce-errors" role="alert">
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div class="commerce-fieldrow">
+          <div>
+            <label class="form-label" for="commerce-address-first-new">First name</label>
+            <input class="form-input" type="text" id="commerce-address-first-new" name="address[first_name]" value="{{ form.first_name | escape }}" autocomplete="given-name">
+          </div>
+          <div>
+            <label class="form-label" for="commerce-address-last-new">Last name</label>
+            <input class="form-input" type="text" id="commerce-address-last-new" name="address[last_name]" value="{{ form.last_name | escape }}" autocomplete="family-name">
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label" for="commerce-address-company-new">Company</label>
+          <input class="form-input" type="text" id="commerce-address-company-new" name="address[company]" value="{{ form.company | escape }}" autocomplete="organization">
+        </div>
+
+        <div>
+          <label class="form-label" for="commerce-address-1-new">Address</label>
+          <input class="form-input" type="text" id="commerce-address-1-new" name="address[address1]" value="{{ form.address1 | escape }}" autocomplete="address-line1">
+        </div>
+
+        <div>
+          <label class="form-label" for="commerce-address-2-new">Apartment, suite, etc.</label>
+          <input class="form-input" type="text" id="commerce-address-2-new" name="address[address2]" value="{{ form.address2 | escape }}" autocomplete="address-line2">
+        </div>
+
+        <div class="commerce-fieldrow">
+          <div>
+            <label class="form-label" for="commerce-address-city-new">City</label>
+            <input class="form-input" type="text" id="commerce-address-city-new" name="address[city]" value="{{ form.city | escape }}" autocomplete="address-level2">
+          </div>
+          <div>
+            <label class="form-label" for="commerce-address-zip-new">Postal code</label>
+            <input class="form-input" type="text" id="commerce-address-zip-new" name="address[zip]" value="{{ form.zip | escape }}" autocomplete="postal-code">
+          </div>
+        </div>
+
+        <div class="commerce-fieldrow">
+          <div>
+            <label class="form-label" for="AddressCountryNew">Country</label>
+            <select class="form-select" id="AddressCountryNew" name="address[country]" data-default="{{ form.country | escape }}" autocomplete="country">
+              {{ country_option_tags }}
+            </select>
+          </div>
+          <div id="AddressProvinceContainerNew">
+            <label class="form-label" for="AddressProvinceNew">Region</label>
+            <select class="form-select" id="AddressProvinceNew" name="address[province]" data-default="{{ form.province | escape }}" autocomplete="address-level1"></select>
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label" for="commerce-address-phone-new">Phone</label>
+          <input class="form-input" type="tel" id="commerce-address-phone-new" name="address[phone]" value="{{ form.phone | escape }}" autocomplete="tel">
+        </div>
+
+        <label class="commerce-check" for="commerce-address-default-new">
+          <input type="checkbox" id="commerce-address-default-new" name="address[default]" value="1">
+          <span>Make this my default address</span>
+        </label>
+
+        <div class="nice-button-box">
+          <button type="submit" class="nice-button btn-md">Save address</button>
+        </div>
+      {% endform %}
+    </div>
+
+    {% paginate customer.addresses by 10 %}
+      {%- if customer.addresses.size > 0 -%}
+        <div class="commerce-address-list">
+          {%- for address in customer.addresses -%}
+            <div class="glass-card commerce-account">
+              {%- if address.id == customer.default_address.id -%}
+                <span class="status-badge status-badge--success">Default</span>
+              {%- endif -%}
+
+              <address class="description" style="font-style: normal;">{{ address | format_address }}</address>
+
+              <details>
+                <summary>Edit this address</summary>
+
+                {% form 'customer_address', address %}
+                  {%- if form.errors -%}
+                    <div class="status-message status-message--error commerce-errors" role="alert">
+                      {{ form.errors | default_errors }}
+                    </div>
+                  {%- endif -%}
+
+                  <div class="commerce-fieldrow">
+                    <div>
+                      <label class="form-label" for="commerce-address-first-{{ form.id }}">First name</label>
+                      <input class="form-input" type="text" id="commerce-address-first-{{ form.id }}" name="address[first_name]" value="{{ form.first_name | escape }}">
+                    </div>
+                    <div>
+                      <label class="form-label" for="commerce-address-last-{{ form.id }}">Last name</label>
+                      <input class="form-input" type="text" id="commerce-address-last-{{ form.id }}" name="address[last_name]" value="{{ form.last_name | escape }}">
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="form-label" for="commerce-address-company-{{ form.id }}">Company</label>
+                    <input class="form-input" type="text" id="commerce-address-company-{{ form.id }}" name="address[company]" value="{{ form.company | escape }}">
+                  </div>
+
+                  <div>
+                    <label class="form-label" for="commerce-address-1-{{ form.id }}">Address</label>
+                    <input class="form-input" type="text" id="commerce-address-1-{{ form.id }}" name="address[address1]" value="{{ form.address1 | escape }}">
+                  </div>
+
+                  <div>
+                    <label class="form-label" for="commerce-address-2-{{ form.id }}">Apartment, suite, etc.</label>
+                    <input class="form-input" type="text" id="commerce-address-2-{{ form.id }}" name="address[address2]" value="{{ form.address2 | escape }}">
+                  </div>
+
+                  <div class="commerce-fieldrow">
+                    <div>
+                      <label class="form-label" for="commerce-address-city-{{ form.id }}">City</label>
+                      <input class="form-input" type="text" id="commerce-address-city-{{ form.id }}" name="address[city]" value="{{ form.city | escape }}">
+                    </div>
+                    <div>
+                      <label class="form-label" for="commerce-address-zip-{{ form.id }}">Postal code</label>
+                      <input class="form-input" type="text" id="commerce-address-zip-{{ form.id }}" name="address[zip]" value="{{ form.zip | escape }}">
+                    </div>
+                  </div>
+
+                  <div class="commerce-fieldrow">
+                    <div>
+                      <label class="form-label" for="AddressCountry_{{ form.id }}">Country</label>
+                      <select class="form-select" id="AddressCountry_{{ form.id }}" name="address[country]" data-default="{{ form.country | escape }}">
+                        {{ country_option_tags }}
+                      </select>
+                    </div>
+                    <div id="AddressProvinceContainer_{{ form.id }}">
+                      <label class="form-label" for="AddressProvince_{{ form.id }}">Region</label>
+                      <select class="form-select" id="AddressProvince_{{ form.id }}" name="address[province]" data-default="{{ form.province | escape }}"></select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="form-label" for="commerce-address-phone-{{ form.id }}">Phone</label>
+                    <input class="form-input" type="tel" id="commerce-address-phone-{{ form.id }}" name="address[phone]" value="{{ form.phone | escape }}">
+                  </div>
+
+                  <label class="commerce-check" for="commerce-address-default-{{ form.id }}">
+                    <input type="checkbox" id="commerce-address-default-{{ form.id }}" name="address[default]" value="1" {% if address.id == customer.default_address.id %}checked{% endif %}>
+                    <span>Make this my default address</span>
+                  </label>
+
+                  <div class="nice-button-box">
+                    <button type="submit" class="nice-button btn-sm">Update address</button>
+                  </div>
+                {% endform %}
+              </details>
+
+              <form method="post" action="{{ routes.account_addresses_url }}/{{ address.id }}" class="commerce-address-actions">
+                <input type="hidden" name="_method" value="delete">
+                <button type="submit" class="commerce-danger">Delete this address</button>
+              </form>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- if paginate.pages > 1 -%}
+          <p style="text-align: center; margin-top: 1.5rem;">{{ paginate | default_pagination }}</p>
+        {%- endif -%}
+      {%- else -%}
+        <p class="section-description" style="margin-top: 1.5rem;">You have not saved an address yet.</p>
+      {%- endif -%}
+    {% endpaginate %}
+
+    <p style="margin-top: 1.5rem;">
+      <a class="promo-link" href="{{ routes.account_url }}">Back to your account <i data-icon="arrow-right"></i></a>
+    </p>
+
+  </div>
+</section>
+
+{{ 'shopify_common.js' | shopify_asset_url | script_tag }}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (typeof Shopify === 'undefined' || typeof Shopify.CountryProvinceSelector !== 'function') return;
+
+    new Shopify.CountryProvinceSelector('AddressCountryNew', 'AddressProvinceNew', {
+      hideElement: 'AddressProvinceContainerNew'
+    });
+
+    var countries = document.querySelectorAll('select[id^="AddressCountry_"]');
+    for (var i = 0; i < countries.length; i++) {
+      var suffix = countries[i].id.replace('AddressCountry_', '');
+      if (!document.getElementById('AddressProvince_' + suffix)) continue;
+      new Shopify.CountryProvinceSelector('AddressCountry_' + suffix, 'AddressProvince_' + suffix, {
+        hideElement: 'AddressProvinceContainer_' + suffix
+      });
+    }
+  });
+</script>

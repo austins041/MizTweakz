@@ -1,0 +1,36 @@
+{% comment %}
+  Store policies (/policies/refund-policy, /policies/privacy-policy, and the
+  rest). Shopify renders the policy body from the admin, so this template only
+  provides the legal banner and the shared prose container.
+{% endcomment %}
+
+{{ 'page-legal.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  .legal-layout--single { grid-template-columns: minmax(0, 800px); }
+  /* this template is one of the dense ones (static .page--tight) */
+  #main-content { gap: clamp(2rem, 4vw, 4rem); }
+{% endstyle %}
+
+  <section class="banner banner--legal" data-mount aria-labelledby="policy-title">
+    <div class="banner-content">
+      <h1 class="banner-title" id="policy-title">{{ policy.title }}</h1>
+    </div>
+  </section>
+
+  <div class="legal-layout legal-layout--single">
+    <div class="legal-content">
+
+      <div class="legal-section legal-prose">
+        {{ policy.body }}
+      </div>
+
+      <footer class="legal-footer">
+        <div class="legal-links">
+          <a class="footer-link footer-link--internal" href="{{ routes.root_url }}">Back to the store <i data-icon="arrow-right"></i></a>
+          <a class="footer-link footer-link--internal" href="/pages/contact">Contact Us <i data-icon="arrow-right"></i></a>
+        </div>
+      </footer>
+
+    </div>
+  </div>

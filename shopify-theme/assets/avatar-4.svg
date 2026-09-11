@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="HA">
+
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34343b"/><stop offset="1" stop-color="#1c1c20"/></linearGradient></defs>
+  <circle cx="60" cy="60" r="58" fill="url(#g)"/>
+  <circle cx="60" cy="60" r="56" fill="none" stroke="#e85a51" stroke-opacity=".7" stroke-width="3"/>
+  <circle cx="90" cy="84" r="4" fill="#e85a51"/>
+  <path d="M42.59 60L34.36 60L34.36 22.74L42.59 22.74L42.59 37.83L48.39 37.83L48.39 22.74L56.62 22.74L56.62 60L48.39 60L48.39 43.72L42.59 43.72L42.59 60ZM70.10 60L62.32 60L69.36 22.74L78.75 22.74L85.69 60L78.10 60L76.86 52.13L71.39 52.13L70.10 60ZM74.10 32.68L72.12 47.21L76.08 47.21L74.10 32.68Z" transform="translate(0 18.63)" fill="#f8f8f6"/>
+</svg>
