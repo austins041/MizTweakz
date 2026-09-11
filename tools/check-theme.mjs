@@ -148,6 +148,34 @@ for (const file of textFiles) {
       if (open !== close) fail(r, `unbalanced ${tag}/end${tag} (${open} open, ${close} close)`);
     }
 
+    // d2. NESTING, not just counts. Equal numbers of for/endfor can still be mis-nested,
+    // for example when an edit closes an outer loop against an inner loop's endfor.
+    // Shopify rejects the whole section for this, so walk the tags with a stack.
+    {
+      const nestable = BLOCK_TAGS.filter((t) => t !== 'comment' && t !== 'raw');
+      const re = new RegExp(`\\{%-?\\s*(end)?(${nestable.join('|')})\\b`, 'g');
+      const stack = [];
+      let m;
+      let broken = false;
+      while ((m = re.exec(body)) !== null) {
+        const isEnd = Boolean(m[1]);
+        const tag = m[2];
+        const line = body.slice(0, m.index).split('\n').length;
+        if (!isEnd) { stack.push({ tag, line }); continue; }
+        const top = stack.pop();
+        if (!top) { fail(r, `end${tag} on line ${line} closes nothing`); broken = true; break; }
+        if (top.tag !== tag) {
+          fail(r, `mis-nested Liquid: {% ${top.tag} %} opened on line ${top.line} is closed by {% end${tag} %} on line ${line}`);
+          broken = true;
+          break;
+        }
+      }
+      if (!broken && stack.length) {
+        const top = stack[stack.length - 1];
+        fail(r, `{% ${top.tag} %} opened on line ${top.line} is never closed`);
+      }
+    }
+
     // no {{ }} inside {% %}
     const bad = body.match(/\{%[^%}]*\{\{/g);
     if (bad) fail(r, `output tag {{ }} inside a {% %} tag: ${bad[0].trim()}`);

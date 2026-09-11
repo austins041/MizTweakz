@@ -59,18 +59,18 @@
     <div class="footer-nav-col">
       <h4 class="nav-title">{{ 'layout.footer.navigate' | t }}</h4>
       <nav class="footer-nav" aria-label="{{ 'layout.footer.navigate' | t }}">
-        {%- assign theme_nav = 'Home~/,Utilities~/pages/utilities,About~/pages/about,Affiliates~/pages/affiliates,Contact~/pages/contact' | split: ',' -%}
-      {%- if section.settings.use_theme_nav -%}
-        {%- for entry in theme_nav -%}
-          {%- assign bits = entry | split: '~' -%}
-          <a class="nav-link" href="{{ bits[1] }}">{{ bits[0] }}</a>
-        {%- endfor -%}
-      {%- else -%}
+          {%- assign theme_nav = 'Home~/,Utilities~/pages/utilities,About~/pages/about,Affiliates~/pages/affiliates,Contact~/pages/contact' | split: ',' -%}
+          {%- if section.settings.use_theme_nav -%}
+            {%- for entry in theme_nav -%}
+              {%- assign bits = entry | split: '~' -%}
+              <a class="nav-link" href="{{ bits[1] }}">{{ bits[0] }}</a>
+            {%- endfor -%}
+          {%- else -%}
         {%- for link in footer_menu.links -%}
           <a class="nav-link" href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
         {%- endfor -%}
       {%- endif -%}
-      </nav>
+        </nav>
     </div>
 
     <div class="footer-nav-col">

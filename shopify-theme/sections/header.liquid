@@ -14,7 +14,6 @@
     - the empty .nav-user-controls slot now holds a cart link
 {%- endcomment -%}
 
-{%- comment -%} The redesign's own navigation, used unless the owner opts into Shopify menus. {%- endcomment -%}
 {%- assign theme_nav = 'Home~/~home,Utilities~/pages/utilities~wrench,About~/pages/about~info,Affiliates~/pages/affiliates~users,Contact~/pages/contact~envelope' | split: ',' -%}
 {%- assign nav_menu = linklists['main-menu'] -%}
 {%- if section.settings.menu != blank -%}
@@ -48,17 +47,20 @@
     <div class="tab-container nav-pill compact">
       {%- if section.settings.use_theme_nav -%}
         {%- for entry in theme_nav -%}
-          {%- assign bits = entry | split: '~' -%}
-          {%- assign t_title = bits[0] -%}
-          {%- assign t_url = bits[1] -%}
-          {%- assign t_icon = bits[2] -%}
-          {%- assign is_active = false -%}
-          {%- if t_url == '/' and request.path == '/' -%}{%- assign is_active = true -%}{%- endif -%}
-          {%- if t_url != '/' and request.path contains t_url -%}{%- assign is_active = true -%}{%- endif -%}
-          <a class="nav-tab{% if is_active %} active{% endif %}" href="{{ t_url }}"{% if is_active %} aria-current="page"{% endif %}><span class="icon-wrapper">{% render 'icon', name: t_icon %}</span><span>{{ t_title }}</span><span class="active-tab-underline" aria-hidden="true"></span></a>
+            {%- assign bits = entry | split: '~' -%}
+            {%- assign t_title = bits[0] -%}
+            {%- assign t_url = bits[1] -%}
+            {%- assign t_icon = bits[2] -%}
+            {%- assign is_active = false -%}
+            {%- if t_url == '/' -%}
+              {%- if request.path == '/' -%}{%- assign is_active = true -%}{%- endif -%}
+            {%- else -%}
+              {%- if request.path contains t_url -%}{%- assign is_active = true -%}{%- endif -%}
+            {%- endif -%}
+            <a class="nav-tab{% if is_active %} active{% endif %}" href="{{ t_url }}"{% if is_active %} aria-current="page"{% endif %}><span class="icon-wrapper">{% render 'icon', name: t_icon %}</span><span>{{ t_title }}</span><span class="active-tab-underline" aria-hidden="true"></span></a>
         {%- endfor -%}
       {%- else -%}
-        {%- for link in nav_menu.links -%}
+      {%- for link in nav_menu.links -%}
         {%- capture icon_name -%}{% render 'nav-icon', link: link %}{%- endcapture -%}
         {%- assign icon_name = icon_name | strip -%}
         {%- assign is_active = false -%}
@@ -72,13 +74,13 @@
               {%- for child in link.links -%}
                 <a class="nav-tab" href="{{ child.url }}"{% if child.active %} aria-current="page"{% endif %}><span class="dot" aria-hidden="true"></span><span>{{ child.title | escape }}</span></a>
               {%- endfor -%}
-      {%- endif -%}
             </div>
           </div>
         {%- else -%}
           <a class="nav-tab{% if is_active %} active{% endif %}" href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}><span class="icon-wrapper">{% render 'icon', name: icon_name %}</span><span>{{ link.title | escape }}</span><span class="active-tab-underline" aria-hidden="true"></span></a>
         {%- endif -%}
       {%- endfor -%}
+    {%- endif -%}
     </div>
 
     <div class="nav-user-controls">
@@ -90,19 +92,22 @@
   </nav>
 
   <nav class="mobile-menu glass-card" id="mobile-menu" aria-label="{{ 'layout.navigation.mobile' | t }}">
-    {%- if section.settings.use_theme_nav -%}
-      {%- for entry in theme_nav -%}
-        {%- assign bits = entry | split: '~' -%}
-        {%- assign t_title = bits[0] -%}
-        {%- assign t_url = bits[1] -%}
-        {%- assign t_icon = bits[2] -%}
-        {%- assign is_active = false -%}
-        {%- if t_url == '/' and request.path == '/' -%}{%- assign is_active = true -%}{%- endif -%}
-        {%- if t_url != '/' and request.path contains t_url -%}{%- assign is_active = true -%}{%- endif -%}
-        <a class="mobile-menu-item{% if is_active %} active{% endif %}" href="{{ t_url }}"{% if is_active %} aria-current="page"{% endif %}>{% render 'icon', name: t_icon %}<span>{{ t_title }}</span></a>
-      {%- endfor -%}
-    {%- else -%}
-      {%- for link in nav_menu.links -%}
+      {%- if section.settings.use_theme_nav -%}
+        {%- for entry in theme_nav -%}
+            {%- assign bits = entry | split: '~' -%}
+            {%- assign t_title = bits[0] -%}
+            {%- assign t_url = bits[1] -%}
+            {%- assign t_icon = bits[2] -%}
+            {%- assign is_active = false -%}
+            {%- if t_url == '/' -%}
+              {%- if request.path == '/' -%}{%- assign is_active = true -%}{%- endif -%}
+            {%- else -%}
+              {%- if request.path contains t_url -%}{%- assign is_active = true -%}{%- endif -%}
+            {%- endif -%}
+            <a class="mobile-menu-item{% if is_active %} active{% endif %}" href="{{ t_url }}"{% if is_active %} aria-current="page"{% endif %}>{% render 'icon', name: t_icon %}<span>{{ t_title }}</span></a>
+        {%- endfor -%}
+      {%- else -%}
+    {%- for link in nav_menu.links -%}
       {%- capture icon_name -%}{% render 'nav-icon', link: link %}{%- endcapture -%}
       {%- assign icon_name = icon_name | strip -%}
       {%- assign is_active = false -%}
@@ -115,13 +120,13 @@
           {%- for child in link.links -%}
             <a class="title-tag nav-tag" href="{{ child.url }}">{{ child.title | escape }}</a>
           {%- endfor -%}
-    {%- endif -%}
         </div>
       {%- endif -%}
     {%- endfor -%}
 
     <a class="mobile-menu-item" href="{{ routes.cart_url }}">{% render 'icon', name: 'cart' %}<span>{{ 'layout.cart.title' | t }} ({{ cart.item_count }})</span></a>
-  </nav>
+  {%- endif -%}
+    </nav>
 </div>
 
 {% schema %}
