@@ -650,7 +650,7 @@
     initAccordions(doc);
     initMount();
     initReveal();
-    renderNotice();
+    // renderNotice(); // Shopify serves its own cookie banner on this store, so the theme does not add a second one.
     initTransitions();
     deepLink();
   }
