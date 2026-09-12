@@ -1,0 +1,99 @@
+{% layout none %}
+{% comment %}
+  Verifies an email address from the link in the app's account email. Ported from site/verify.html.
+
+  The auth worker (backend/auth-worker.js) builds its links as APP_URL/verify?token=
+  and APP_URL/reset?token=, with APP_URL set to https://miztweakz.com. Shopify only
+  serves pages under /pages/, so a URL redirect sends /verify to /pages/verify and
+  /reset to /pages/reset, carrying the token through. The page reads the token from
+  the query string itself and posts straight to the worker.
+
+  layout none is deliberate: this is an email landing page, so it gets no header,
+  footer or cart, exactly as the standalone original did.
+{% endcomment %}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Verify your email | MizTweakz</title>
+<style>
+  :root{
+    --bg:#1f1f21; --panel:#2b2b2e; --line:rgba(255,255,255,.10);
+    --tx:#ffffff; --mu:#c7c7c8; --fa:#8f8f90; --ac:#d92b21;
+    --good:#22c55e; --bad:#ef4444;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);
+    color:var(--tx);font-family:"Roboto",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:24px}
+  .card{width:100%;max-width:400px;background:var(--panel);border:1px solid var(--line);
+    border-radius:14px;padding:28px;text-align:center}
+  .brand{font-size:13px;font-family:"Outfit",system-ui,sans-serif;letter-spacing:3px;font-weight:700;color:var(--ac);margin-bottom:22px}
+  h1{font-size:20px;font-family:"Outfit",system-ui,sans-serif;font-weight:700;margin:0 0 10px}
+  p{color:var(--mu);font-size:14px;line-height:1.6;margin:0}
+  .mark{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;
+    margin:0 auto 16px;font-size:24px;font-weight:700}
+  .ok{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.4);color:var(--good)}
+  .bad{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.4);color:var(--bad)}
+  .wait{background:rgba(217,43,33,.12);border:1px solid rgba(217,43,33,.4);color:var(--ac)}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap">
+<link rel="icon" href="{{ 'brand-favicon-32.png' | asset_url }}" sizes="32x32" type="image/png">
+</head>
+<body>
+<div class="card">
+  <div class="brand">MIZTWEAKZ</div>
+  <div id="view">
+    <div class="mark wait">&middot;&middot;&middot;</div>
+    <h1>Verifying</h1>
+    <p>One moment.</p>
+  </div>
+</div>
+
+<script>
+const AUTH_BASE = "https://miztweakz-auth.miztweakz.workers.dev";
+const view = document.getElementById("view");
+const token = new URLSearchParams(location.search).get("token");
+
+const render = (mark, cls, title, body) => {
+  view.innerHTML = `<div class="mark ${cls}">${mark}</div><h1>${title}</h1><p>${body}</p>`;
+};
+
+// Verification is a single automatic request. There is nothing for the user to
+// fill in, so doing it on load rather than behind a button saves a pointless click.
+(async () => {
+  if (!token) {
+    render("!", "bad", "Nothing to verify",
+      "This page needs the link from your verification email. Open that email and click the button.");
+    return;
+  }
+  try {
+    const r = await fetch(`${AUTH_BASE}/email/verify`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+    }).then((x) => x.json());
+
+    if (r && r.ok) {
+      render("&#10003;", "ok", "Email verified",
+        "You can close this page. Nothing else to do.");
+    } else if (r && r.error === "invalid_or_expired") {
+      // Most often this is someone clicking an old email twice, so the wording
+      // avoids implying anything is wrong with their account.
+      render("!", "bad", "This link has expired",
+        "Verification links last 48 hours and work once. Open MizTweakz and request a new one from your account.");
+    } else {
+      render("!", "bad", "Could not verify",
+        "Something went wrong at our end. Try the link again in a moment.");
+    }
+  } catch {
+    render("!", "bad", "Could not reach the server",
+      "Check your connection and open the link again.");
+  }
+})();
+</script>
+</body>
+</html>
