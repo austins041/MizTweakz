@@ -218,6 +218,18 @@ for (const js of ['assets/site.js', 'assets/data.js']) {
   }
 }
 
+/* ---------- h. FAQ schema matches the FAQ markup ---------- */
+/* The JSON-LD is generated from the visible questions. Google requires the two to
+   agree, so a copy edit that touches only the markup has to fail here. */
+try {
+  execFileSync(process.execPath, [path.join(__dirname, 'build-faq-schema.mjs'), '--check'], { stdio: 'pipe' });
+  notes.push('FAQ schema matches the FAQ markup');
+} catch (err) {
+  const msg = String(err.stdout || '') + String(err.stderr || '');
+  fail('tools/build-faq-schema.mjs', 'the generated FAQ schema no longer matches the FAQ markup, run: node tools/build-faq-schema.mjs');
+  if (process.env.FAQ_DEBUG) console.error(msg);
+}
+
 /* ---------- unreferenced assets (informational) ---------- */
 const referenced = new Set();
 for (const file of textFiles) {
