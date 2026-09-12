@@ -73,5 +73,28 @@
         "info": "The clip already plays on the home page as an animated image, so this is optional. For full video quality, upload the MP4 under Settings then Files, copy its URL and paste it here."
       }
     ]
+  },
+  {
+    "name": "Home page SEO",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "These override the home page title and description from Online Store then Preferences. Leave blank to use Preferences instead. Do not add the store name to the title, the theme appends it."
+      },
+      {
+        "type": "text",
+        "id": "home_seo_title",
+        "label": "Home page title",
+        "info": "Aim for 48 characters or fewer. The theme adds \" | MIZTWEAKZ\" after it, and Google cuts the result around 60.",
+        "default": "Low FPS on a Good PC? Fix It Without New Hardware"
+      },
+      {
+        "type": "textarea",
+        "id": "home_seo_description",
+        "label": "Home page meta description",
+        "info": "Aim for 150 to 160 characters. Google truncates past that.",
+        "default": "Your PC is fast but your games do not feel like it. 525 tested Windows tweaks that cut input delay and steady your frames. Free app, fully reversible."
+      }
+    ]
   }
 ]
