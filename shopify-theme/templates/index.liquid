@@ -93,7 +93,7 @@
     </div>
   </div>
   <div class="text-col">
-    <h2 class="section-title" id="results-title">Before &amp; After.</h2>
+    <h2 class="section-title" id="results-title">Before and after, on the same PC</h2>
     <div class="feature-cards">
       <div class="feature-card"><i data-icon="gauge"></i><div><h3>Higher FPS</h3><p>Registry, power and GPU settings that unlock your hardware's true potential</p></div></div>
       <div class="feature-card"><i data-icon="stopwatch"></i><div><h3>Lower Input Delay</h3><p>Custom keyboard, mouse and controller tweaks so every input lands instantly</p></div></div>
@@ -105,7 +105,7 @@
 <!-- 6. WHY MIZTWEAKZ -->
 <section class="how-it-works reveal section" id="why" aria-labelledby="why-title">
   <div class="section-header">
-    <h2 class="section-title" id="why-title">Instantly Improve Your Performance.</h2>
+    <h2 class="section-title" id="why-title">Tested, non-intrusive and fully reversible</h2>
     <p class="section-subtitle section-subtitle--plain">Everything is tested, non-intrusive and fully reversible. No sketchy third-party tools.</p>
   </div>
   <div class="steps-container">
@@ -208,7 +208,14 @@
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": {{ shop.name | json }},
+  {%- comment -%}
+    Real spellings people search for, from Search Console: "miz tweaks" alone
+    earns more clicks than every other variant combined. These are aliases for
+    the same entity, not copy, so they stay out of the visible page.
+  {%- endcomment -%}
+  "alternateName": ["Miz Tweaks", "MizTweaks", "Miz Tweakz", "MizTweakz", "Mizery Tweaks"],
   "url": {{ shop.url | json }},
+  "description": "MIZTWEAKZ makes a free Windows desktop app with 525 tested tweaks that raise FPS, cut input delay and lower ping on Windows 10 and 11. Every change is reversible and nothing is written to your game files.",
   "sameAs": [{{ same_as }}]
 }
 </script>
