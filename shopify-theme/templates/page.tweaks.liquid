@@ -1,0 +1,187 @@
+{% comment %}
+  "Every tweak, documented" reference page.
+
+  Built because 525 documented changes is the biggest number anyone in this
+  category publishes and it was invisible: the site said "525 tweaks" on five
+  pages and never once said what they were. It answers the objection that sinks
+  this category ("what is it actually doing to my PC") and it targets the real
+  queries: what does miztweakz change, are pc tweaks safe, 525 tweaks.
+
+  Every figure below is counted from the app's own catalogue, src/tweaks.js, on
+  2026-09-12: 525 entries across 13 categories, tiers free 10 / basic 253 /
+  ultimate 262, kinds reg 234 / service 119 / appx 70 / task 60 / cmd 32, and
+  the app's own risk labels, safe 414 / caution 111. If the catalogue changes,
+  recount it. Do not round these or guess.
+{% endcomment %}
+
+{{ 'page-legal.css' | asset_url | stylesheet_tag }}
+
+<section class="banner" data-mount aria-labelledby="tweaks-title">
+  <div class="banner-content">
+    <span class="title-tag">Transparency</span>
+    <h1 class="banner-title" id="tweaks-title">Every tweak we can make, documented</h1>
+    <p class="banner-subtitle">
+      MizTweakz applies 525 individual changes to Windows settings. Not to your games, and not
+      to anything we do not list here. This page is the whole catalogue, grouped by what it
+      touches, so you can decide before you install anything.
+    </p>
+    <div class="banner-pills">
+      <span class="title-tag">525 tweaks</span>
+      <span class="title-tag" style="--color:#22c55e">All reversible</span>
+      <span class="title-tag" style="--color:#3b82f6">13 categories</span>
+    </div>
+  </div>
+</section>
+
+<section class="section animate" aria-labelledby="what-title">
+  <div class="container">
+    <div class="section-header section-header--left">
+      <span class="title-tag bar-eyebrow" aria-hidden="true">What it changes</span>
+      <h2 class="section-title" id="what-title">Windows settings only, never your games</h2>
+    </div>
+
+    <div class="legal-layout legal-layout--single">
+      <div class="legal-prose">
+        <p>
+          Every one of the 525 tweaks is one of five kinds of change. There is no sixth kind,
+          and none of them touch a game install.
+        </p>
+
+        <div class="glass-info-card-grid" style="margin:1.5rem 0">
+          <div class="glass-info-card glass-card"><span class="info-accent"></span>
+            <h3>234 registry values</h3>
+            <p>Windows settings that have no switch in the Settings app: frame pacing, GPU scheduling, mouse acceleration, TCP behaviour, menu delays.</p>
+          </div>
+          <div class="glass-info-card glass-card"><span class="info-accent"></span>
+            <h3>119 Windows services</h3>
+            <p>Background services set to disabled or manual. Fax, Remote Registry, Superfetch, Windows Search and similar, none of which a gaming PC needs running.</p>
+          </div>
+          <div class="glass-info-card glass-card"><span class="info-accent"></span>
+            <h3>70 Store app removals</h3>
+            <p>Pre-installed apps you never opened. Removed with Windows' own uninstall, and every one can be reinstalled from the Microsoft Store.</p>
+          </div>
+          <div class="glass-info-card glass-card"><span class="info-accent"></span>
+            <h3>60 scheduled tasks</h3>
+            <p>Background jobs Windows runs on a timer, mostly telemetry, diagnostics and update checks that wake your machine mid-game.</p>
+          </div>
+          <div class="glass-info-card glass-card"><span class="info-accent"></span>
+            <h3>32 commands</h3>
+            <p>Power plan changes and network stack resets, the same commands you would type yourself with powercfg and netsh.</p>
+          </div>
+          <div class="glass-info-card glass-card" style="--color:#22c55e"><span class="info-accent"></span>
+            <h3>0 changes to game files</h3>
+            <p>Nothing is written into a game folder, no file is patched and nothing is injected into a running process. The app reads Fortnite's install path for one thing only: its icon.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-with-bar bar-section animate" aria-labelledby="cats-title">
+  <span class="title-tag bar-eyebrow" aria-hidden="true">The catalogue</span>
+  <h2 class="section-title" id="cats-title">All 525, by category</h2>
+  <p class="showcase-subtitle">
+    Counted from the app's catalogue on 12 September 2026. The free tier unlocks 10 of these,
+    Basic 263 and Ultimate all 525.
+  </p>
+
+  <div class="container">
+    <div class="legal-layout legal-layout--single">
+      <div class="legal-prose">
+        <div style="overflow-x:auto">
+          <table class="tweak-table">
+            <thead>
+              <tr><th scope="col">Category</th><th scope="col">Tweaks</th><th scope="col">What it covers</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Services</th><td>121</td><td>Background Windows services you do not need running.</td></tr>
+              <tr><th scope="row">Debloat</th><td>70</td><td>Remove pre-installed apps you never open.</td></tr>
+              <tr><th scope="row">Scheduled Tasks</th><td>60</td><td>Background tasks that run on a timer.</td></tr>
+              <tr><th scope="row">Privacy</th><td>51</td><td>Telemetry, tracking and data collection.</td></tr>
+              <tr><th scope="row">Network &amp; Ping</th><td>43</td><td>TCP, DNS and throttling settings for lower latency.</td></tr>
+              <tr><th scope="row">Visual Effects</th><td>35</td><td>Animations, transparency and menu delays.</td></tr>
+              <tr><th scope="row">Gaming</th><td>33</td><td>Game Mode, DVR, GPU scheduling and frame pacing.</td></tr>
+              <tr><th scope="row">System</th><td>25</td><td>Timers, notifications and background apps.</td></tr>
+              <tr><th scope="row">Input &amp; Mouse</th><td>20</td><td>Acceleration, polling and key repeat for consistent aim.</td></tr>
+              <tr><th scope="row">Power</th><td>20</td><td>CPU states, USB suspend and sleep behaviour.</td></tr>
+              <tr><th scope="row">Explorer</th><td>20</td><td>File Explorer and shell responsiveness.</td></tr>
+              <tr><th scope="row">Memory &amp; Disk</th><td>15</td><td>Paging, prefetch and NTFS behaviour.</td></tr>
+              <tr><th scope="row">Updates</th><td>12</td><td>Update timing, drivers and reboot behaviour.</td></tr>
+              <tr><th scope="row"><b>Total</b></th><td><b>525</b></td><td>Across 13 categories.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section animate" aria-labelledby="risk-title">
+  <div class="container">
+    <div class="section-header section-header--left">
+      <span class="title-tag bar-eyebrow" aria-hidden="true">Honesty</span>
+      <h2 class="section-title" id="risk-title">111 of them are labelled caution, and we tell you which</h2>
+    </div>
+
+    <div class="legal-layout legal-layout--single">
+      <div class="legal-prose">
+        <p>
+          Not every tweak suits every machine. The app carries a risk label on all 525 and shows
+          it before you apply anything:
+        </p>
+        <ul>
+          <li><b>414 are marked safe.</b> They change a Windows setting with no side effect worth warning you about.</li>
+          <li><b>111 are marked caution.</b> They turn off something you might actually use. Disabling Bluetooth services is great on a desktop and wrong on a laptop with wireless headphones. The label is there so you can skip them.</li>
+        </ul>
+        <p>
+          The app also rates expected impact, and it is deliberately unglamorous: <b>26 high, 108 medium
+          and 391 low</b>. Most single tweaks do very little on their own. The gain comes from the total,
+          which is the honest version of a claim this category usually inflates.
+        </p>
+        <p>
+          Every change can be undone. Revert them one at a time, revert a whole category, or roll the
+          machine back from a restore point the app can make for you before it touches anything.
+        </p>
+        <p><a href="/pages/safe">More on safety, anti-cheat and what we do not do</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta glass-card reveal" aria-labelledby="tweaks-cta-title">
+  <div class="cta-glow" aria-hidden="true"></div>
+  <span class="section-label"><span class="free-word">Free download</span></span>
+  <h2 id="tweaks-cta-title">See them in the app</h2>
+  <p>The free tier unlocks 10 of these with no account limits and works offline.</p>
+  <div class="cta-group">
+    <div class="nice-button-box"><a class="nice-button btn-lg" href="https://github.com/austins041/MizTweakz/releases/latest/download/MizTweakz-Setup.exe" data-download>Download for <span class="free-word">Free</span></a></div>
+    <a class="nice-button grey btn-lg" href="/pages/utilities">See plans</a>
+  </div>
+</section>
+
+{%- comment -%} Reference page. ItemList lets an answer engine lift the breakdown intact. {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "MizTweakz tweak catalogue by category",
+  "description": "All 525 Windows tweaks MizTweakz can apply, grouped into 13 categories. Counted from the application catalogue on 12 September 2026.",
+  "numberOfItems": 13,
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Services", "description": "121 tweaks. Background Windows services you do not need running." },
+    { "@type": "ListItem", "position": 2, "name": "Debloat", "description": "70 tweaks. Remove pre-installed apps you never open." },
+    { "@type": "ListItem", "position": 3, "name": "Scheduled Tasks", "description": "60 tweaks. Background tasks that run on a timer." },
+    { "@type": "ListItem", "position": 4, "name": "Privacy", "description": "51 tweaks. Telemetry, tracking and data collection." },
+    { "@type": "ListItem", "position": 5, "name": "Network and Ping", "description": "43 tweaks. TCP, DNS and throttling settings for lower latency." },
+    { "@type": "ListItem", "position": 6, "name": "Visual Effects", "description": "35 tweaks. Animations, transparency and menu delays." },
+    { "@type": "ListItem", "position": 7, "name": "Gaming", "description": "33 tweaks. Game Mode, DVR, GPU scheduling and frame pacing." },
+    { "@type": "ListItem", "position": 8, "name": "System", "description": "25 tweaks. Timers, notifications and background apps." },
+    { "@type": "ListItem", "position": 9, "name": "Input and Mouse", "description": "20 tweaks. Acceleration, polling and key repeat for consistent aim." },
+    { "@type": "ListItem", "position": 10, "name": "Power", "description": "20 tweaks. CPU states, USB suspend and sleep behaviour." },
+    { "@type": "ListItem", "position": 11, "name": "Explorer", "description": "20 tweaks. File Explorer and shell responsiveness." },
+    { "@type": "ListItem", "position": 12, "name": "Memory and Disk", "description": "15 tweaks. Paging, prefetch and NTFS behaviour." },
+    { "@type": "ListItem", "position": 13, "name": "Updates", "description": "12 tweaks. Update timing, drivers and reboot behaviour." }
+  ]
+}
+</script>

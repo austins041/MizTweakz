@@ -59,7 +59,7 @@
     <div class="footer-nav-col">
       <h2 class="nav-title">{{ 'layout.footer.navigate' | t }}</h2>
       <nav class="footer-nav" aria-label="{{ 'layout.footer.navigate' | t }}">
-          {%- assign theme_nav = 'Home~/,Utilities~/pages/utilities,About~/pages/about,Affiliates~/pages/affiliates,Contact~/pages/contact' | split: ',' -%}
+          {%- assign theme_nav = 'Home~/,Utilities~/pages/utilities,Is it safe?~/pages/safe,All 525 tweaks~/pages/tweaks,About~/pages/about,Affiliates~/pages/affiliates,Contact~/pages/contact' | split: ',' -%}
           {%- if section.settings.use_theme_nav -%}
             {%- for entry in theme_nav -%}
               {%- assign bits = entry | split: '~' -%}

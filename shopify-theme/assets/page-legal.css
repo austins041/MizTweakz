@@ -156,3 +156,12 @@
   .legal-toc a { white-space: nowrap; }
   .legal-anchor { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; margin: -12px 0 -12px -8px; } /* "#" permalink: 44px hit area without growing the heading */
 }
+
+/* Catalogue table on /pages/tweaks. Scrolls inside its own container so a
+   narrow screen never makes the page itself scroll sideways. */
+.tweak-table { border-collapse: collapse; width: 100%; min-width: 460px; margin: 1.25rem 0; font-size: .95rem; }
+.tweak-table th, .tweak-table td { text-align: left; padding: .6rem .8rem; border-bottom: 1px solid rgba(255,255,255,.10); vertical-align: top; }
+.tweak-table thead th { font-family: var(--font-display); font-size: .74rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+.tweak-table tbody th { font-weight: 600; color: var(--text); white-space: nowrap; }
+.tweak-table td:nth-child(2) { font-variant-numeric: tabular-nums; color: var(--accent-bright, var(--accent)); font-weight: 600; white-space: nowrap; }
+.tweak-table tbody tr:last-child th, .tweak-table tbody tr:last-child td { border-bottom: 0; border-top: 1px solid rgba(255,255,255,.22); }

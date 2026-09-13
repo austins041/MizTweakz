@@ -1,0 +1,238 @@
+{% comment %}
+  "Is MizTweakz safe?" page.
+
+  Every competitor FAQ in this category leads with safety, and the buyer reviews
+  that convert say things like "didnt break my pc like other tweaks". The site
+  had no page answering it. It targets: is miztweakz safe, are fps boosters
+  safe, do fps boosters work, what does miztweakz change.
+
+  IMPORTANT, read before editing any claim here. These were verified against the
+  app source on 2026-09-12, not taken from marketing copy:
+
+    - No process injection. No CreateRemoteThread, WriteProcessMemory,
+      VirtualAllocEx or SetWindowsHookEx anywhere in the source.
+    - No writes to game files. electron/graphics-ipc.js touches Fortnite's
+      install path only to check the exe exists and read its icon for the UI.
+    - Restore points are real: Checkpoint-Computer and Enable-ComputerRestore
+      in electron/tools-ipc.js and electron/tweaks-ipc.js.
+    - The NVIDIA profile reverts by importing NVIDIA's own stock Fortnite
+      profile rather than undoing writes one by one.
+
+  There is deliberately NO blanket "anti-cheat safe" claim. The app's own UI
+  warns that some anti-cheat software disallows overlays, so that caveat is
+  stated here in the same terms rather than papered over. Do not upgrade this
+  page's language to promise anti-cheat compatibility.
+{% endcomment %}
+
+{{ 'page-legal.css' | asset_url | stylesheet_tag }}
+
+<section class="banner" data-mount aria-labelledby="safe-title">
+  <div class="banner-content">
+    <span class="title-tag">Safety</span>
+    <h1 class="banner-title" id="safe-title">Is MizTweakz safe to use?</h1>
+    <p class="banner-subtitle">
+      Short answer: it changes Windows settings, never your games, and every change can be
+      undone. The longer answer is below, including the one thing we will not promise you.
+    </p>
+    <div class="banner-pills">
+      <span class="title-tag" style="--color:#22c55e">Fully reversible</span>
+      <span class="title-tag">No process injection</span>
+      <span class="title-tag" style="--color:#3b82f6">Restore points</span>
+    </div>
+  </div>
+</section>
+
+<section class="section animate" aria-labelledby="does-title">
+  <div class="container">
+    <div class="section-header section-header--left">
+      <span class="title-tag bar-eyebrow" aria-hidden="true">What it does</span>
+      <h2 class="section-title" id="does-title">What MizTweakz changes</h2>
+    </div>
+    <div class="legal-layout legal-layout--single">
+      <div class="legal-prose">
+        <p>
+          MizTweakz applies 525 changes to Windows settings: registry values, background
+          services, scheduled tasks, pre-installed Store apps, and power and network settings.
+          They are the same changes you could make by hand, collected in one place with a
+          switch next to each one.
+        </p>
+        <p><a href="/pages/tweaks">The full catalogue, all 525 of them, is documented here</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-with-bar bar-section animate" aria-labelledby="not-title">
+  <span class="title-tag bar-eyebrow" aria-hidden="true">What it does not do</span>
+  <h2 class="section-title" id="not-title">What it never touches</h2>
+  <p class="showcase-subtitle">The list that matters more than the feature list.</p>
+
+  <div class="container">
+    <div class="glass-info-card-grid">
+      <div class="glass-info-card glass-card" style="--color:#22c55e"><span class="info-accent"></span>
+        <h3>It does not modify your games</h3>
+        <p>No file in a game folder is written, patched or replaced. The app reads Fortnite's install path for exactly one purpose: to show the game's own icon in the interface.</p>
+      </div>
+      <div class="glass-info-card glass-card" style="--color:#22c55e"><span class="info-accent"></span>
+        <h3>It does not inject into processes</h3>
+        <p>There is no code anywhere in the app that writes into another program's memory or hooks into a running game. Nothing attaches to your game while you play.</p>
+      </div>
+      <div class="glass-info-card glass-card" style="--color:#22c55e"><span class="info-accent"></span>
+        <h3>It does not bundle third-party tools</h3>
+        <p>No drivers, no kernel components, no repackaged utilities from somewhere else. It uses Windows' own interfaces to change Windows' own settings.</p>
+      </div>
+      <div class="glass-info-card glass-card" style="--color:#22c55e"><span class="info-accent"></span>
+        <h3>It does not keep your tweaks on disk</h3>
+        <p>Paid tweak definitions arrive from the server after you sign in and are held in memory for that session only.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section animate" aria-labelledby="undo-title">
+  <div class="container">
+    <div class="section-header section-header--left">
+      <span class="title-tag bar-eyebrow" aria-hidden="true">Undo</span>
+      <h2 class="section-title" id="undo-title">Every change can be reversed</h2>
+    </div>
+    <div class="legal-layout legal-layout--single">
+      <div class="legal-prose">
+        <p>Three ways out, in increasing order of bluntness:</p>
+        <ul>
+          <li><b>Revert a single tweak.</b> Every applied tweak has a revert next to it.</li>
+          <li><b>Revert a whole category.</b> Undo all 43 network tweaks at once if your ping got worse instead of better.</li>
+          <li><b>Roll back the machine.</b> The app can create a Windows restore point before it changes anything, from any category header or the Restore points tool.</li>
+        </ul>
+        <p>
+          The NVIDIA graphics profile is undone differently and deliberately so: instead of
+          reversing each value, it imports NVIDIA's own stock Fortnite profile. A half-finished
+          revert cannot leave your driver in a state nobody designed.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section animate" aria-labelledby="anticheat-title">
+  <div class="container">
+    <div class="section-header section-header--left">
+      <span class="title-tag bar-eyebrow" aria-hidden="true">Anti-cheat</span>
+      <h2 class="section-title" id="anticheat-title">What we will not promise you</h2>
+    </div>
+    <div class="legal-layout legal-layout--single">
+      <div class="legal-prose">
+        <p>
+          Plenty of sites in this category will tell you their software is guaranteed safe with
+          every anti-cheat. We are not going to, because nobody outside Riot, Epic or Valve can
+          promise that about software they do not control.
+        </p>
+        <p>What we can tell you precisely:</p>
+        <ul>
+          <li>
+            <b>The tweaks change Windows, not your game.</b> Nothing is written into a game
+            folder and nothing attaches to a running process, which is what anti-cheat systems
+            are built to detect.
+          </li>
+          <li>
+            <b>The crosshair overlay is the one thing to check first.</b> It draws on top of your
+            game, and some anti-cheat software disallows overlays. Check your game's rules before
+            using it competitively. The app tells you the same thing on the crosshair screen.
+          </li>
+        </ul>
+        <p>
+          If you play something with a strict overlay policy, use everything else and leave the
+          crosshair off. Nothing else in the app puts anything on your screen while you play.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-with-bar bar-section faq-section animate" aria-labelledby="safe-faq-title">
+  <div class="section-header">
+    <span class="section-label">Support</span>
+    <h2 class="faq-title" id="safe-faq-title">Frequently asked questions</h2>
+    <p class="faq-subtitle">Safety, bans, reversibility and what happens if something goes wrong</p>
+  </div>
+  <div class="faq-list" data-accordion>
+    <div class="faq-item"><h3><button type="button" class="faq-question" aria-expanded="false">Will MizTweakz get me banned?<span class="faq-icon" aria-hidden="true"><i data-icon="plus"></i></span></button></h3><div class="faq-answer"><div class="faq-answer-inner">The tweaks change Windows settings and never touch your game files or running processes, which is what anti-cheat systems look for. The one thing to check is the crosshair overlay, because some anti-cheat software disallows overlays. Check your game's rules before using it competitively, and leave it off if you are unsure.</div></div></div>
+    <div class="faq-item"><h3><button type="button" class="faq-question" aria-expanded="false">What if a tweak makes something stop working?<span class="faq-icon" aria-hidden="true"><i data-icon="plus"></i></span></button></h3><div class="faq-answer"><div class="faq-answer-inner">Revert it. Every applied tweak can be undone individually, a whole category can be reverted at once, and the app can create a Windows restore point before it changes anything so you can roll the machine back entirely.</div></div></div>
+    <div class="faq-item"><h3><button type="button" class="faq-question" aria-expanded="false">Why does it need administrator rights?<span class="faq-icon" aria-hidden="true"><i data-icon="plus"></i></span></button></h3><div class="faq-answer"><div class="faq-answer-inner">Most tweaks write to the registry, Windows services and scheduled tasks, and Windows requires administrator rights for all three. The installer asks once and the app asks each time it launches.</div></div></div>
+    <div class="faq-item"><h3><button type="button" class="faq-question" aria-expanded="false">Is every tweak safe to apply?<span class="faq-icon" aria-hidden="true"><i data-icon="plus"></i></span></button></h3><div class="faq-answer"><div class="faq-answer-inner">414 of the 525 are labelled safe and 111 are labelled caution, and the app shows you the label before you apply anything. Caution does not mean dangerous, it means the tweak turns off something you might actually use. Disabling Bluetooth services is sensible on a desktop and wrong on a laptop with wireless headphones.</div></div></div>
+    <div class="faq-item"><h3><button type="button" class="faq-question" aria-expanded="false">Do PC tweaks actually do anything?<span class="faq-icon" aria-hidden="true"><i data-icon="plus"></i></span></button></h3><div class="faq-answer"><div class="faq-answer-inner">Individually, mostly very little. The app rates 391 of the 525 as low impact, 108 as medium and 26 as high. The gain comes from applying a lot of them together, and it is larger on a machine carrying years of background software than on a clean install.</div></div></div>
+    <div class="faq-item"><h3><button type="button" class="faq-question" aria-expanded="false">Does it work on Windows 10?<span class="faq-icon" aria-hidden="true"><i data-icon="plus"></i></span></button></h3><div class="faq-answer"><div class="faq-answer-inner">Yes. Windows 10 and Windows 11, on desktops and laptops. Results vary with your hardware and with how much is already running in the background.</div></div></div>
+  </div>
+  <div class="faq-cta">
+    <p class="cta-text">Still not sure?</p>
+    <a class="cta-link" href="{{ settings.discord_url }}" target="_blank" rel="noopener noreferrer">Ask us on Discord <i data-icon="arrow-right"></i></a>
+  </div>
+</section>
+
+<section class="final-cta glass-card reveal" aria-labelledby="safe-cta-title">
+  <div class="cta-glow" aria-hidden="true"></div>
+  <span class="section-label"><span class="free-word">Free download</span></span>
+  <h2 id="safe-cta-title">Try it without paying</h2>
+  <p>The free tier unlocks 10 tweaks and works offline. Revert any of them at any time.</p>
+  <div class="cta-group">
+    <div class="nice-button-box"><a class="nice-button btn-lg" href="https://github.com/austins041/MizTweakz/releases/latest/download/MizTweakz-Setup.exe" data-download>Download for <span class="free-word">Free</span></a></div>
+    <a class="nice-button grey btn-lg" href="/pages/tweaks">See all 525 tweaks</a>
+  </div>
+
+  {%- comment -%} FAQ schema: generated by tools/build-faq-schema.mjs, do not hand edit {%- endcomment -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Will MizTweakz get me banned?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The tweaks change Windows settings and never touch your game files or running processes, which is what anti-cheat systems look for. The one thing to check is the crosshair overlay, because some anti-cheat software disallows overlays. Check your game's rules before using it competitively, and leave it off if you are unsure."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What if a tweak makes something stop working?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Revert it. Every applied tweak can be undone individually, a whole category can be reverted at once, and the app can create a Windows restore point before it changes anything so you can roll the machine back entirely."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does it need administrator rights?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most tweaks write to the registry, Windows services and scheduled tasks, and Windows requires administrator rights for all three. The installer asks once and the app asks each time it launches."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is every tweak safe to apply?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "414 of the 525 are labelled safe and 111 are labelled caution, and the app shows you the label before you apply anything. Caution does not mean dangerous, it means the tweak turns off something you might actually use. Disabling Bluetooth services is sensible on a desktop and wrong on a laptop with wireless headphones."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do PC tweaks actually do anything?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Individually, mostly very little. The app rates 391 of the 525 as low impact, 108 as medium and 26 as high. The gain comes from applying a lot of them together, and it is larger on a machine carrying years of background software than on a clean install."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does it work on Windows 10?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Windows 10 and Windows 11, on desktops and laptops. Results vary with your hardware and with how much is already running in the background."
+        }
+      }
+    ]
+  }
+  </script>
+  {%- comment -%} end FAQ schema {%- endcomment -%}
