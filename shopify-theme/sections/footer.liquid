@@ -83,11 +83,16 @@
       </nav>
     </div>
 
+    {%- comment -%} No download CTA on the post-download guide. {%- endcomment -%}
+    {%- assign is_install_page = false -%}
+    {%- if template.name == 'page' and page.handle == 'install' -%}{%- assign is_install_page = true -%}{%- endif -%}
+    {%- unless is_install_page -%}
     <div class="footer-cta glass-card">
       <h2 class="nav-title">{{ section.settings.cta_title }}</h2>
       <p class="cta-text">{{ section.settings.cta_text }}</p>
       <div class="nice-button-box"><a class="nice-button btn-md" href="{{ download_url }}">Download for <span class="free-word">Free</span></a></div>
     </div>
+    {%- endunless -%}
   </div>
 
   <div class="footer-bottom">
