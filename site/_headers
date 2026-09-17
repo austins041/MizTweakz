@@ -9,3 +9,7 @@
 # CSS/JS links are the belt-and-braces for the same problem.
 /assets/*
   Cache-Control: public, max-age=0, must-revalidate
+
+# The install video never changes once uploaded, so it can be cached hard.
+/media/*
+  Cache-Control: public, max-age=31536000, immutable

@@ -11,7 +11,8 @@
      8. modal system (data-modal="pack-buy|pack-learn|login|cookie-prefs")
      9. cookie consent card + preferences modal (localStorage "mz-consent")
     10. page transitions (same-origin links fade out 220 ms, then navigate)
-    11. deep links (?pack=<handle> opens that pack's Buy modal)
+    11. download buttons hand off to /pages/install
+    12. deep links (?pack=<handle> opens that pack's Buy modal)
    Public API: window.MZ.ui  (see BUILD-NOTES.md)
    Requires data.js to be loaded first.
    ========================================================================= */
@@ -616,6 +617,17 @@
       closeModal();
       return;
     }
+    /* Download buttons hand off to the install guide. The href is a .exe, so the
+       browser downloads it without navigating and we can send the visitor on once
+       it has started. No preventDefault here, or the download never begins.
+       [data-no-guide] opts out, which the guide page uses on its own button. */
+    var dlLink = e.target.closest('a[href]');
+    var dlHref = dlLink ? (dlLink.getAttribute('href') || '').toLowerCase() : '';
+    if (dlLink && dlHref.indexOf('.exe') > -1 && !dlLink.hasAttribute('data-no-guide')) {
+      setTimeout(function () { leaveTo('/pages/install'); }, 900);
+      return;
+    }
+
     var a = e.target.closest('a[href]');
     if (!a || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     if ((a.target && a.target !== '_self') || a.hasAttribute('download') || a.hasAttribute('data-no-transition')) return;

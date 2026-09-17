@@ -96,5 +96,21 @@
         "default": "Your PC is fast but your games do not feel like it. 525 tested Windows tweaks that cut input delay and steady your frames. Free app, fully reversible."
       }
     ]
+  },
+  {
+    "name": "Install guide",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "The video shown on /pages/install, the page a visitor lands on after clicking any download button. Shopify will not host an .mp4 as a theme file, so upload it under Content then Files and paste its URL here."
+      },
+      {
+        "type": "text",
+        "id": "install_video_url",
+        "label": "Install video URL",
+        "info": "The direct .mp4 link from Content then Files. Leave blank to hide the player and show only the written steps.",
+        "default": "https://misstweaks-redesign.pages.dev/media/install-guide.mp4"
+      }
+    ]
   }
 ]

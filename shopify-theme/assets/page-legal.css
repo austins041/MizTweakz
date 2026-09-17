@@ -165,3 +165,11 @@
 .tweak-table tbody th { font-weight: 600; color: var(--text); white-space: nowrap; }
 .tweak-table td:nth-child(2) { font-variant-numeric: tabular-nums; color: var(--accent-bright, var(--accent)); font-weight: 600; white-space: nowrap; }
 .tweak-table tbody tr:last-child th, .tweak-table tbody tr:last-child td { border-bottom: 0; border-top: 1px solid rgba(255,255,255,.22); }
+
+/* Install guide player. Caps the width so a 1080p file does not dominate a
+   large screen, and keeps its aspect ratio without a padding hack. */
+.install-video-wrap { max-width: 900px; margin: 0 auto; }
+.install-video { width: 100%; height: auto; aspect-ratio: 16 / 9; display: block; border-radius: 14px; border: 1px solid rgba(255,255,255,.10); background: #000; }
+.install-steps { counter-reset: step; list-style: none; padding: 0; margin: 1.25rem 0; display: grid; gap: .9rem; }
+.install-steps li { counter-increment: step; position: relative; padding-left: 2.4rem; line-height: 1.6; }
+.install-steps li::before { content: counter(step); position: absolute; left: 0; top: .05em; width: 1.7rem; height: 1.7rem; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--accent); color: var(--accent); font-family: var(--font-display); font-size: .8rem; font-weight: 700; }
