@@ -624,7 +624,11 @@
     var dlLink = e.target.closest('a[href]');
     var dlHref = dlLink ? (dlLink.getAttribute('href') || '').toLowerCase() : '';
     if (dlLink && dlHref.indexOf('.exe') > -1 && !dlLink.hasAttribute('data-no-guide')) {
-      setTimeout(function () { leaveTo('/pages/install'); }, 900);
+      /* The guide page starts the download itself, so navigate straight there.
+         Starting it here and navigating on a timer raced: a slow redirect meant
+         the navigation cancelled the file. */
+      e.preventDefault();
+      leaveTo('/pages/install');
       return;
     }
 

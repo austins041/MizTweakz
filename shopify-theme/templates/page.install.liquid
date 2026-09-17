@@ -1,142 +1,94 @@
 {% comment %}
-  Post-download install guide.
+  Post-download install guide. Deliberately simple: a heading, the video, four
+  short steps, and a way to download again. Nothing else.
 
-  Reached only by clicking a Download button: site.js starts the download from
-  the button's href and then sends the visitor here. It is deliberately not in
-  the header or footer navigation and it is noindex, so it stays an unlisted
-  page rather than a search result.
+  The download starts HERE rather than from the button that sent you, because
+  the old approach raced: it began the download from the link's href and then
+  navigated 900ms later, and if GitHub's redirect to its CDN was slow the
+  navigation cancelled the download. Now the button just navigates and this page
+  triggers the file, so both always happen.
 
-  The video is served from Shopify Files, not from theme assets, because Shopify
-  rejects .mp4 as a theme asset entirely. The URL lives in a theme setting
-  (settings.install_video_url) so it can be swapped in the customizer without a
-  code change. The poster frame IS a theme asset, since jpg is allowed.
-
-  The written steps are not decoration. They carry the same information for
-  anyone who cannot play video, is on a metered connection, or just wants to
-  read it, and every one of them is true of the current app.
+  Unlisted: noindex, and in no navigation menu.
 {% endcomment %}
 
 {{ 'page-legal.css' | asset_url | stylesheet_tag }}
 
-{%- comment -%} Unlisted: reachable from the download button, not from search. {%- endcomment -%}
 <meta name="robots" content="noindex, follow">
 
 {%- assign dl = 'https://github.com/austins041/MizTweakz/releases/latest/download/MizTweakz-Setup.exe' -%}
 {%- if settings.download_url != blank -%}{%- assign dl = settings.download_url -%}{%- endif -%}
 
-<section class="banner" data-mount aria-labelledby="install-title">
-  <div class="banner-content">
-    <span class="title-tag" style="--color:#22c55e">Download started</span>
-    <h1 class="banner-title" id="install-title">Video guide: how to install MizTweakz correctly</h1>
-    <p class="banner-subtitle">
-      Your download is on its way. Watch this before you run it and you will be set up in
-      about two minutes. If the download did not start, there is a button for it below.
-    </p>
-    <div class="banner-pills">
-      <span class="title-tag">1 min 36 sec</span>
-      <span class="title-tag" style="--color:#3b82f6">Windows 10 &amp; 11</span>
-    </div>
-  </div>
-</section>
+<section class="section install-page" aria-labelledby="install-title">
+  <div class="container install-wrap">
 
-<section class="section animate" aria-labelledby="video-title">
-  <div class="container">
-    <div class="section-header section-header--left">
-      <span class="title-tag bar-eyebrow" aria-hidden="true">Watch first</span>
-      <h2 class="section-title" id="video-title">Installing MizTweakz, start to finish</h2>
-    </div>
+    <span class="title-tag" style="--color:#22c55e">Downloading now</span>
+    <h1 class="install-h1" id="install-title">Watch this while it downloads</h1>
+    <p class="install-lead">
+      MizTweakz-Setup.exe is on its way to your Downloads folder. This video walks through the
+      whole setup, start to finish.
+    </p>
 
     {%- if settings.install_video_url != blank -%}
-      <div class="install-video-wrap">
-        <video
-          class="install-video"
-          controls
-          playsinline
-          preload="metadata"
-          width="1920" height="1080"
-          poster="{{ 'install-guide-poster.jpg' | asset_url }}">
-          <source src="{{ settings.install_video_url }}" type="video/mp4">
-          Your browser cannot play this video. The written steps below cover the same ground.
-        </video>
-      </div>
-    {%- else -%}
-      <div class="legal-layout legal-layout--single">
-        <div class="legal-prose">
-          <p>
-            The video has not been set yet. Add its URL under Online Store, Customize, Theme
-            settings, Install guide. The written steps below work regardless.
-          </p>
-        </div>
-      </div>
+      <video
+        class="install-video"
+        controls
+        playsinline
+        preload="metadata"
+        width="1920" height="1080"
+        poster="{{ 'install-guide-poster.jpg' | asset_url }}">
+        <source src="{{ settings.install_video_url }}" type="video/mp4">
+        Your browser cannot play this video. The steps below cover the same ground.
+      </video>
     {%- endif -%}
+
+    <ol class="install-steps">
+      <li>Run <b>MizTweakz-Setup.exe</b> from your Downloads folder.</li>
+      <li>Allow it when Windows asks for <b>administrator rights</b>. The tweaks need them.</li>
+      <li><b>Sign in</b> and your plan unlocks inside the app.</li>
+      <li><b>Make a restore point</b>, then start applying tweaks. Anything can be reverted.</li>
+    </ol>
+
+    <p class="install-again">
+      Download did not start?
+      <a href="{{ dl }}" data-no-guide>Get it again</a>
+      &nbsp;·&nbsp; <a href="/pages/safe">Is it safe?</a>
+      &nbsp;·&nbsp; <a href="/pages/tweaks">All 525 tweaks</a>
+    </p>
+
   </div>
 </section>
 
-<section class="section section-with-bar bar-section animate" aria-labelledby="steps-title">
-  <span class="title-tag bar-eyebrow" aria-hidden="true">Written version</span>
-  <h2 class="section-title" id="steps-title">The same thing in five steps</h2>
-  <p class="showcase-subtitle">For when you cannot play the video, or would rather read.</p>
+<script>
+  (function () {
+    var url = {{ dl | json }};
+    function start() {
+      try {
+        var a = document.createElement("a");
+        a.href = url;
+        a.rel = "noopener";
+        /* Without this, site.js treats the synthetic click as a download button,
+           cancels it and redirects back here, looping the page forever. */
+        a.setAttribute("data-no-guide", "");
+        a.style.display = "none";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } catch (err) { /* the "Get it again" link is the fallback */ }
+    }
+    /* After load, not during parsing: starting it mid-parse aborts the
+       document and the rest of the page never initialises. */
+    if (document.readyState === "complete") setTimeout(start, 400);
+    else window.addEventListener("load", function () { setTimeout(start, 400); });
+  })();
+</script>
 
-  <div class="container">
-    <div class="legal-layout legal-layout--single">
-      <div class="legal-prose">
-        <ol class="install-steps">
-          <li>
-            <b>Run MizTweakz-Setup.exe.</b> It is the file that just downloaded, usually in your
-            Downloads folder.
-          </li>
-          <li>
-            <b>Allow it when Windows asks for administrator rights.</b> Most tweaks write to the
-            registry, Windows services and scheduled tasks, and Windows requires administrator
-            rights for all three. The app will ask again each time it launches.
-          </li>
-          <li>
-            <b>Create an account or sign in.</b> The free tier works offline once you are signed
-            in. Paid tweak definitions arrive from the server for that session only and are never
-            written to disk.
-          </li>
-          <li>
-            <b>Make a restore point before you apply anything.</b> There is a button for it on any
-            category header and in the Restore points tool. It takes a moment and means you can
-            put the machine back exactly as it was.
-          </li>
-          <li>
-            <b>Apply tweaks one at a time or a whole category at once.</b> Start with the ones
-            marked safe. Anything can be reverted individually or by category afterwards.
-          </li>
-        </ol>
-        <p>
-          Want to know exactly what each one changes first?
-          <a href="/pages/tweaks">All 525 are documented here</a>, and
-          <a href="/pages/safe">this page covers safety and anti-cheat</a>.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="final-cta glass-card reveal" aria-labelledby="install-cta-title">
-  <div class="cta-glow" aria-hidden="true"></div>
-  <span class="section-label">Did not start?</span>
-  <h2 id="install-cta-title">Download it again</h2>
-  <p>Clicking here downloads the installer directly and will not send you back to this page.</p>
-  <div class="cta-group">
-    <div class="nice-button-box"><a class="nice-button btn-lg" href="{{ dl }}" data-no-guide>Download for <span class="free-word">Free</span></a></div>
-    <a class="nice-button grey btn-lg" href="/pages/utilities">See plans</a>
-  </div>
-</section>
-
-{%- comment -%}
-  VideoObject so the guide can surface as a video result. uploadDate is the day
-  the file was added; update it if the video is ever replaced.
-{%- endcomment -%}
 {%- if settings.install_video_url != blank -%}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "VideoObject",
-  "name": "How to install MizTweakz correctly",
-  "description": "A walkthrough of installing the MizTweakz Windows app: running the installer, granting administrator rights, signing in, creating a restore point and applying your first tweaks.",
+  "name": "How to install MizTweakz",
+  "description": "Installing the MizTweakz Windows app: running the installer, granting administrator rights, signing in, making a restore point and applying your first tweaks.",
   "thumbnailUrl": [{{ 'install-guide-poster.jpg' | asset_url | prepend: request.origin | json }}],
   "uploadDate": "2026-09-16",
   "duration": "PT1M36S",

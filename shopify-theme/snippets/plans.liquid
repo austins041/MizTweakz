@@ -1,0 +1,158 @@
+{% comment %}
+  The three plan cards, shared by /pages/utilities and the home page.
+
+  Extracted into a snippet so the pricing lives in one place. Previously the
+  cards carried data-price / data-original / data-sale driven by the billing
+  period toggle, but that toggle was removed when the 6 month and annual options
+  went, so the sale elements were permanently hidden and both prices rendered
+  the same figure. They now read Shopify's real compare_at_price, which is what
+  the product page already shows, so a sale is visible everywhere at once.
+
+  Params:
+    anchor_id  - element id for the section. Defaults to utility-plans, which is
+                 what the "See Plans" links target.
+    heading    - h2 text. Defaults to "Plans and pricing".
+    eyebrow    - small tag above the heading.
+{% endcomment %}
+
+{%- assign anchor_id = anchor_id | default: 'utility-plans' -%}
+{%- assign heading = heading | default: 'Plans and pricing' -%}
+{%- assign eyebrow = eyebrow | default: 'The Utility' -%}
+
+{%- assign basic_product = all_products['basic'] -%}
+{%- assign ultimate_product = all_products['ultimate'] -%}
+
+{%- assign basic_url = '/products/basic' -%}
+{%- assign basic_price = '$7.99' -%}
+{%- assign basic_compare = blank -%}
+{%- if basic_product != empty -%}
+  {%- assign basic_url = basic_product.url -%}
+  {%- assign bv = basic_product.selected_or_first_available_variant -%}
+  {%- if basic_product.price > 0 -%}{%- assign basic_price = basic_product.price | money -%}{%- endif -%}
+  {%- if bv.compare_at_price > bv.price -%}{%- assign basic_compare = bv.compare_at_price | money -%}{%- endif -%}
+{%- endif -%}
+
+{%- assign ultimate_url = '/products/ultimate' -%}
+{%- assign ultimate_price = '$14.99' -%}
+{%- assign ultimate_compare = blank -%}
+{%- if ultimate_product != empty -%}
+  {%- assign ultimate_url = ultimate_product.url -%}
+  {%- assign uv = ultimate_product.selected_or_first_available_variant -%}
+  {%- if ultimate_product.price > 0 -%}{%- assign ultimate_price = ultimate_product.price | money -%}{%- endif -%}
+  {%- if uv.compare_at_price > uv.price -%}{%- assign ultimate_compare = uv.compare_at_price | money -%}{%- endif -%}
+{%- endif -%}
+
+<section class="section section-with-bar bar-section plans-section animate" id="{{ anchor_id }}" aria-labelledby="{{ anchor_id }}-title">
+  <span class="title-tag bar-eyebrow" aria-hidden="true" style="--color:#b418e7">{{ eyebrow }}</span>
+  <div class="plans-head">
+    <div class="plans-head-left">
+      <h2 id="{{ anchor_id }}-title">{{ heading }}</h2>
+    </div>
+    <div class="subscriber-count glass-card" role="group" aria-label="4,000+ active users">
+      <strong class="led-count" data-count="4000" data-suffix="+">4,000+</strong>
+      <span>Active Users</span>
+    </div>
+  </div>
+  <p class="plans-subtitle">Every plan is monthly and cancels any time. Tweaks you have already applied stay applied if you stop.</p>
+
+  <div class="plans-grid">
+
+    <div class="plan-card-wrapper" id="{{ anchor_id }}-free">
+      <span class="plan-tag plan-tag--green">Your Plan</span>
+      <article class="plan-card glass-card" aria-labelledby="{{ anchor_id }}-free-name">
+        <div class="top-card-container">
+          <div class="top-card plan-top">
+            <h3 class="top-card-text" id="{{ anchor_id }}-free-name">Free</h3>
+          </div>
+        </div>
+        <div class="content-wrapper">
+          <div class="price-row">
+            <span class="price">$0</span>
+            <span class="price-currency">/month</span>
+          </div>
+          <p class="description">Enough to feel the difference before you pay for anything.</p>
+          <div class="nice-button-box book-now-box"><a class="nice-button btn-md" href="https://github.com/austins041/MizTweakz/releases/latest/download/MizTweakz-Setup.exe" data-download><span>Download for <span class="free-word">Free</span></span></a></div>
+          <div class="plan-features">
+            <span class="feature-header">Features</span>
+            <ul class="features">
+              <li><i data-icon="check"></i><span>10 tweaks</span></li>
+              <li><i data-icon="check"></i><span>8 categories</span></li>
+              <li><i data-icon="check"></i><span>Processes and App Debloat</span></li>
+              <li><i data-icon="check"></i><span>Restore points and storage cleanup</span></li>
+              <li><i data-icon="check"></i><span>Crosshair designer, 2 presets</span></li>
+              <li class="is-excluded"><i data-icon="times"></i><span><span class="sr-only">Not included: </span>FPS Boost</span></li>
+              <li class="is-excluded"><i data-icon="times"></i><span><span class="sr-only">Not included: </span>Network and ping tweaks</span></li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="plan-shell outer-glow-container" id="{{ anchor_id }}-ultimate">
+      <span class="plan-tag">Most Popular</span>
+      <article class="plan-card glass-card" aria-labelledby="{{ anchor_id }}-ultimate-name">
+        <div class="top-card-container">
+          <div class="top-card plan-top">
+            <h3 class="top-card-text" id="{{ anchor_id }}-ultimate-name">Ultimate</h3>
+          </div>
+        </div>
+        <div class="content-wrapper">
+          <div class="price-row">
+            {%- if ultimate_compare != blank -%}<span class="original-price">{{ ultimate_compare }}</span>{%- endif -%}
+            <span class="price">{{ ultimate_price }}</span>
+            <span class="price-currency">/month</span>
+            {%- if ultimate_compare != blank -%}<span class="sale-badge">Sale</span>{%- endif -%}
+          </div>
+          <p class="billing-note">Billed monthly, cancel any time.</p>
+          <p class="description">Everything, including the full network and latency set.</p>
+          <div class="nice-button-box book-now-box"><a class="nice-button btn-md" href="{{ ultimate_url }}">Get Ultimate <i data-icon="arrow-right"></i></a></div>
+          <div class="plan-features">
+            <span class="feature-header">Features</span>
+            <ul class="features">
+              <li><i data-icon="check"></i><span>All 525 tweaks</span></li>
+              <li><i data-icon="check"></i><span>Everything in Basic</span></li>
+              <li><i data-icon="check"></i><span>FPS Boost and Potato Graphics</span></li>
+              <li><i data-icon="check"></i><span>Network and ping tweaks (43)</span></li>
+              <li><i data-icon="check"></i><span>Full services and scheduled task control</span></li>
+              <li><i data-icon="check"></i><span>Every visual and system tweak</span></li>
+              <li><i data-icon="check"></i><span>Priority on new tweaks</span></li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="plan-card-wrapper" id="{{ anchor_id }}-basic">
+      <article class="plan-card glass-card" aria-labelledby="{{ anchor_id }}-basic-name">
+        <div class="top-card-container">
+          <div class="top-card plan-top">
+            <h3 class="top-card-text" id="{{ anchor_id }}-basic-name">Basic</h3>
+          </div>
+        </div>
+        <div class="content-wrapper">
+          <div class="price-row">
+            {%- if basic_compare != blank -%}<span class="original-price">{{ basic_compare }}</span>{%- endif -%}
+            <span class="price">{{ basic_price }}</span>
+            <span class="price-currency">/month</span>
+            {%- if basic_compare != blank -%}<span class="sale-badge">Sale</span>{%- endif -%}
+          </div>
+          <p class="billing-note">Billed monthly, cancel any time.</p>
+          <p class="description">The tweaks that move frames and cut input delay.</p>
+          <div class="nice-button-box book-now-box"><a class="nice-button btn-md" href="{{ basic_url }}">Get Basic <i data-icon="arrow-right"></i></a></div>
+          <div class="plan-features">
+            <span class="feature-header">Features</span>
+            <ul class="features">
+              <li><i data-icon="check"></i><span>263 tweaks</span></li>
+              <li><i data-icon="check"></i><span>Everything in Free</span></li>
+              <li><i data-icon="check"></i><span>Gaming, input, privacy and debloat</span></li>
+              <li><i data-icon="check"></i><span>Crosshair designer, all presets and saving</span></li>
+              <li class="is-excluded"><i data-icon="times"></i><span><span class="sr-only">Not included: </span>FPS Boost</span></li>
+              <li class="is-excluded"><i data-icon="times"></i><span><span class="sr-only">Not included: </span>Network and ping tweaks (43)</span></li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </div>
+
+  </div>
+</section>

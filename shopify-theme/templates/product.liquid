@@ -22,7 +22,9 @@
 {%- endif -%}
 
 {% style %}
-  .commerce-stage { padding: 18px; width: 100%; max-width: 620px; display: flex; align-items: center; justify-content: center; }
+  /* Capped so a tall screenshot cannot stretch the row and reopen the empty space. */
+  .commerce-stage { padding: 14px; width: 100%; max-width: 560px; display: flex; align-items: center; justify-content: center; }
+  .commerce-stage img, .commerce-stage svg { max-height: 360px; object-fit: contain; }
   .commerce-stage img, .commerce-stage svg { width: 100%; height: auto; border-radius: 14px; }
   .commerce-thumbs { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
   .commerce-thumb { width: 72px; height: 72px; padding: 4px; border-radius: 10px; border: 1px solid var(--hairline); background: rgba(0, 0, 0, .3); overflow: hidden; }
@@ -55,7 +57,13 @@
           {%- endif -%}
         </div>
 
-        {%- if product.images.size > 1 -%}
+        {%- comment -%} The five app screens the utilities coverflow uses, so a plan page is not one flat image. {%- endcomment -%}
+        {%- assign app_shots = '' | split: ';;' -%}
+        {%- if product.selling_plan_groups.size > 0 -%}
+          {%- assign app_shots = 'app-home.webp~The MizTweakz home screen with the optimization score and scan;;app-fps-boost.webp~FPS Boost trimming the standby list with a live memory graph;;app-crosshair.webp~The crosshair designer with its shapes, presets and sliders;;app-gaming-tweaks.webp~The Gaming tweaks category with a toggle on each tweak;;app-potato-graphics.webp~The Potato Graphics NVIDIA profile screen' | split: ';;' -%}
+        {%- endif -%}
+        {%- assign total_shots = product.images.size | plus: app_shots.size -%}
+        {%- if total_shots > 1 -%}
           <div class="commerce-thumbs" role="group" aria-label="Product images">
             {%- for image in product.images -%}
               {%- assign thumb_alt = image.alt | default: product.title | escape -%}
@@ -68,6 +76,14 @@
                       {% if forloop.first %}aria-current="true"{% endif %}>
                 <span class="sr-only">Show image {{ forloop.index }} of {{ product.images.size }}</span>
                 {{ image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}
+              </button>
+            {%- endfor -%}
+            {%- for shot in app_shots -%}
+              {%- assign bits = shot | split: '~' -%}
+              <button type="button" class="commerce-thumb app-shot" data-commerce-thumb
+                      data-full="{{ bits[0] | asset_url }}" data-alt="{{ bits[1] | escape }}">
+                <span class="sr-only">Show app screenshot {{ forloop.index }} of {{ app_shots.size }}</span>
+                <img src="{{ bits[0] | asset_url }}" loading="lazy" alt="">
               </button>
             {%- endfor -%}
           </div>

@@ -173,3 +173,15 @@
 .install-steps { counter-reset: step; list-style: none; padding: 0; margin: 1.25rem 0; display: grid; gap: .9rem; }
 .install-steps li { counter-increment: step; position: relative; padding-left: 2.4rem; line-height: 1.6; }
 .install-steps li::before { content: counter(step); position: absolute; left: 0; top: .05em; width: 1.7rem; height: 1.7rem; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--accent); color: var(--accent); font-family: var(--font-display); font-size: .8rem; font-weight: 700; }
+
+/* Install guide. One narrow column, generous spacing, nothing else competing
+   with the video. Replaces the earlier multi-section version. */
+.install-page { padding-top: 2.5rem; }
+.install-wrap { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.1rem; }
+.install-h1 { font-family: var(--font-display); font-size: clamp(1.9rem, 4.5vw, 3rem); line-height: 1.08; font-weight: 800; margin: .2rem 0 0; }
+.install-lead { color: var(--muted); max-width: 54ch; margin: 0; line-height: 1.6; }
+.install-video { width: 100%; height: auto; aspect-ratio: 16 / 9; display: block; border-radius: 14px; border: 1px solid rgba(255,255,255,.10); background: #000; margin: .6rem 0 .4rem; }
+.install-steps { counter-reset: step; list-style: none; padding: 0; margin: 0; display: grid; gap: .65rem; text-align: left; width: 100%; max-width: 620px; }
+.install-steps li { counter-increment: step; position: relative; padding-left: 2.3rem; line-height: 1.55; color: var(--text); }
+.install-steps li::before { content: counter(step); position: absolute; left: 0; top: 0; width: 1.6rem; height: 1.6rem; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--accent); color: var(--accent); font-family: var(--font-display); font-size: .78rem; font-weight: 700; }
+.install-again { color: var(--muted); font-size: .92rem; margin: .8rem 0 0; }
