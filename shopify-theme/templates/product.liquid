@@ -156,38 +156,6 @@
         <div class="commerce-prose">{{ product.description }}</div>
       {%- endif -%}
 
-      {%- comment -%}
-        Only the app plans carry selling plans, so a future one off product does not
-        inherit these claims. Every fact below is also stated in the utilities FAQ.
-      {%- endcomment -%}
-      {%- if product.selling_plan_groups.size > 0 -%}
-        <h2 class="commerce-subhead">How it works</h2>
-        <ol class="commerce-steps">
-          <li>Download the MizTweakz app and install it. The app itself is free.</li>
-          <li>Sign in and your plan unlocks inside the app. Nothing is sent to you by email.</li>
-          <li>Toggle the tweaks you want, or apply a whole category at once. Make a restore point first if you prefer.</li>
-        </ol>
-
-        <h2 class="commerce-subhead">Requirements</h2>
-        <ul class="commerce-facts">
-          <li><b>Windows 10 and Windows 11.</b> Desktops and laptops both.</li>
-          <li><b>Administrator rights.</b> Most tweaks write to the registry, services and scheduled tasks, so the app asks for them each launch.</li>
-          <li><b>A MizTweakz account.</b> Paid tweak definitions arrive from the server after you sign in and are never stored on disk.</li>
-          <li><b>Fully reversible.</b> Revert tweak by tweak, or roll back from a restore point. Nothing is written to your game files.</li>
-          <li><b>Updates itself.</b> The app checks for a new version shortly after launch and every 6 hours after that.</li>
-        </ul>
-      {%- endif -%}
-
-      {%- if product.vendor != blank or current_variant.sku != blank -%}
-        <div class="commerce-meta">
-          {%- if product.vendor != blank -%}
-            <span>Sold by {{ product.vendor | escape }}</span>
-          {%- endif -%}
-          {%- if current_variant.sku != blank -%}
-            <span class="mono" id="commerce-sku">SKU {{ current_variant.sku | escape }}</span>
-          {%- endif -%}
-        </div>
-      {%- endif -%}
 
       <p class="form-note"><i data-icon="lock"></i><span>Secure checkout handled by Shopify.</span></p>
     </div>
